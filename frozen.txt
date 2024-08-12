@@ -1,0 +1,101 @@
+alembic==1.8.1
+APScheduler==3.9.1.post1
+arrow==1.3.0
+Babel==2.10.3
+backports.zoneinfo==0.2.1
+Beaker==1.11.0
+beautifulsoup4==4.8.2
+binaryornot==0.4.4
+bleach==5.0.1
+blinker==1.5
+certifi==2021.10.8
+chardet==5.2.0
+charset-normalizer==2.0.12
+-e git+https://github.com/ckan/ckan.git@f03e7f7d02397b064a29a5c737fa4a72b8a30191#egg=ckan
+-e git+https://github.com/OGD-Jordan/ckanext-licenses@3e04e62abbaa6850cfd003b2aff1e4eb22023659#egg=ckanext_licenses
+# Editable install with no version control (ckanext-orgextend==0.0.1)
+-e /usr/lib/ckan/default/src/ckanext-orgextend
+-e git+https://github.com/OGD-Jordan/ckanext-pages.git@81912bcdf5a9fbfd3a01dacdb387c88049768696#egg=ckanext_pages
+-e git+https://github.com/OGD-Jordan/ckanext-showcase.git@d24f792dfa187881d10acd03f9d98562dd641b46#egg=ckanext_showcase
+-e git+https://github.com/OGD-Jordan/ckanext-sorting.git@b0985367aaec8f80442183ed636dbb6ead6db75c#egg=ckanext_sorting
+-e git+https://github.com/OGD-Jordan/ckanext-theme.git@26b9ed67accf2417f0ddf9d7c1061d6cf34bf80d#egg=ckanext_theme
+-e git+https://github.com/OGD-Jordan/ckanext-usergroups@cc352201247e000b3bebba7a4847881348ec5793#egg=ckanext_usergroups
+ckanserviceprovider==1.2.0
+click==8.1.3
+cookiecutter==2.1.1
+coverage==7.6.0
+-e git+https://github.com/ckan/datapusher@737e7f3badf881394555619bb2aab381f195298e#egg=datapusher
+Deprecated==1.2.13
+dominate==2.7.0
+exceptiongroup==1.2.2
+feedgen==0.9.0
+Flask==2.0.3
+Flask-Babel==1.0.0
+Flask-DebugToolbar==0.11.0
+Flask-Login==0.6.1
+flask-multistatic==1.0
+Flask-WTF==1.0.1
+future==1.0.0
+greenlet==2.0.2
+html5lib==1.1
+httpretty==1.1.4
+idna==3.3
+importlib-metadata==4.11.3
+importlib_resources==6.4.0
+iniconfig==2.0.0
+itsdangerous==2.1.1
+Jinja2==2.11.3
+jinja2-time==0.2.0
+json-table-schema==0.2.1
+lxml==4.9.1
+Mako==1.2.2
+Markdown==3.4.1
+MarkupSafe==2.0.1
+messytables==0.15.2
+mypy==0.971
+mypy-extensions==0.4.3
+nose==1.3.7
+packaging==21.3
+passlib==1.7.4
+pluggy==1.5.0
+polib==1.1.1
+psycopg2==2.9.3
+psycopg2-binary==2.9.9
+PyJWT==2.4.0
+pyparsing==3.0.7
+pysolr==3.9.0
+pytest==8.2.2
+pytest-ckan==0.0.12
+pytest-cov==2.7.1
+python-dateutil==2.8.2
+python-magic==0.4.27
+python-slugify==8.0.4
+pytz==2021.3
+pytz-deprecation-shim==0.1.0.post0
+PyUtilib==6.0.0
+PyYAML==6.0.1
+redis==4.1.4
+requests==2.28.1
+rq==1.11.0
+simplejson==3.17.6
+six==1.16.0
+soupsieve==2.5
+SQLAlchemy==1.4.41
+sqlalchemy2-stubs==0.0.2a27
+sqlparse==0.4.2
+text-unidecode==1.3
+tomli==2.0.1
+types-python-dateutil==2.9.0.20240316
+typing_extensions==4.3.0
+tzdata==2022.1
+tzlocal==4.2
+urllib3==1.26.9
+watchdog==2.1.6
+webassets==2.0
+webencodings==0.5.1
+Werkzeug==2.0.3
+wrapt==1.14.0
+WTForms==3.0.1
+xlrd==2.0.1
+zipp==3.7.0
+zope.interface==5.4.0
