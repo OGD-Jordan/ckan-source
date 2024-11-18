@@ -119,7 +119,7 @@ def dump(resource_id: str):
         headers['Content-disposition'] = content_disposition
 
     try:
-        return Response(dump_to(resource_id,
+        resp = Response(dump_to(resource_id,
                                 fmt=fmt,
                                 offset=offset,
                                 limit=limit,
@@ -129,6 +129,13 @@ def dump(resource_id: str):
                                 user=user_context),
                         mimetype='application/octet-stream',
                         headers=headers)
+        try:
+            get_action('downloads_resource_increment')(
+                {'ignore_auth': True}, 
+                {'resource_id': resource_id})
+        except: pass
+
+        return resp 
     except ObjectNotFound:
         abort(404, _('DataStore resource not found'))
 

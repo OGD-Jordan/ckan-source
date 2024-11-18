@@ -406,6 +406,24 @@ def _group_or_org_list(
     query = query.filter(model.Group.is_organization == is_org)
     query = query.filter(model.Group.type == group_type)
 
+    following_status = data_dict.get('following_status', None)
+    # followed or unfollowed
+    if following_status:
+        from ckan.common import current_user
+
+        query = query.join(
+            model.UserFollowingGroup, 
+            (model.Group.id == model.UserFollowingGroup.object_id) & 
+            (model.UserFollowingGroup.follower_id == current_user.id), 
+            isouter=True
+        )
+
+        if following_status == 'followed':
+            query = query.filter(model.UserFollowingGroup.follower_id == current_user.id)
+        elif following_status == 'unfollowed':
+            query = query.filter(model.UserFollowingGroup.follower_id.is_(None))
+
+
     if sort_info:
         sort_field = sort_info[0][0]
         sort_direction = sort_info[0][1]
