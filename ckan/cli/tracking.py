@@ -174,7 +174,7 @@ def update_tracking(engine: model.Engine, summary_date: datetime.datetime):
                 FROM tracking_summary t2
                 WHERE t1.url = t2.url
                 AND t2.tracking_date <= t1.tracking_date
-                AND t2.tracking_date >= t1.tracking_date - 14
+                AND t2.tracking_date >= t1.tracking_date - interval '14 days'
                 )
                 WHERE t1.running_total = 0 AND tracking_type = 'resource';'''
     engine.execute(sql)
@@ -192,7 +192,7 @@ def update_tracking(engine: model.Engine, summary_date: datetime.datetime):
                 FROM tracking_summary t2
                 WHERE t1.package_id = t2.package_id
                 AND t2.tracking_date <= t1.tracking_date
-                AND t2.tracking_date >= t1.tracking_date - 14
+                AND t2.tracking_date >= t1.tracking_date - interval '14 days'
                 )
                 WHERE t1.running_total = 0 AND tracking_type = 'page'
                 AND t1.package_id IS NOT NULL

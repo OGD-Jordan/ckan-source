@@ -2304,7 +2304,7 @@ my.Map = Backbone.View.extend({
   _setupMap: function(){
     var self = this;
     this.map = new L.Map(this.$map.get(0));
-    var mapUrl = this.options.mapTilesURL || 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png';
+    var mapUrl = this.options.mapTilesURL || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     var attribution = this.options.mapTilesAttribution ||'Map tiles by <a href="http://stamen.com">Stamen Design</a> (<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>). Data by <a href="http://openstreetmap.org">OpenStreetMap</a> (<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>)';
     var subdomains = this.options.mapTilesSubdomains || 'abc';
 
