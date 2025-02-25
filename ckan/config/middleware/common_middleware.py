@@ -30,7 +30,7 @@ class RootPathMiddleware(object):
 
         return self.app(environ, start_response)
 
-
+from datetime import datetime
 class TrackingMiddleware(object):
 
     def __init__(self, app: CKANApp, config: CKANConfig):
@@ -61,9 +61,9 @@ class TrackingMiddleware(object):
             key = hashlib.md5(six.ensure_binary(key)).hexdigest()
             # store key/data here
             sql = '''INSERT INTO tracking_raw
-                     (user_key, url, tracking_type)
-                     VALUES (%s, %s, %s)'''
-            self.engine.execute(sql, key, data.get('url'), data.get('type'))
+                     (user_key, url, tracking_type, access_timestamp)
+                     VALUES (%s, %s, %s, %s)'''
+            self.engine.execute(sql, key, data.get('url'), data.get('type'), datetime.now())
             return []
         return self.app(environ, start_response)
 

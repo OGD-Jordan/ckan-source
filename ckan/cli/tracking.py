@@ -59,7 +59,7 @@ def update_all(engine: model.Engine, start_date: Optional[str] = None):
             combine = datetime.datetime.combine
             date = combine(date, datetime.time(0))
         else:
-            date = datetime.datetime(2011, 1, 1)
+            date = datetime.datetime(2025, 1, 1)
     start_date_solrsync = date
     end_date = datetime.datetime.now()
 
@@ -140,9 +140,9 @@ def update_tracking(engine: model.Engine, summary_date: datetime.datetime):
                 FROM tracking_raw
                 WHERE CAST(access_timestamp as Date)=%s;
 
-                INSERT INTO tracking_summary
-                (url, count, tracking_date, tracking_type)
-                SELECT url, count(user_key), tracking_date, tracking_type
+                INSERT INTO tracking_summary 
+                (url, count, tracking_date, tracking_type, running_total, recent_views)
+                SELECT url, COUNT(user_key), tracking_date, tracking_type, 0, 0
                 FROM tracking_tmp
                 GROUP BY url, tracking_date, tracking_type;
 
