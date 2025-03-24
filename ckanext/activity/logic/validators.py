@@ -55,6 +55,34 @@ VALIDATORS_ORGANIZATION_ACTIVITY_TYPES = {
     "follow organization": "group_id_exists",
 }
 
+OPTIONS_PACKAGE_ACTIVITY_TYPES = {
+    "new package" : tk._("new package"),
+    "changed package" : tk._("changed package"),
+    "deleted package" : tk._("deleted package"),
+    "follow dataset" : tk._("follow dataset"),
+}
+
+OPTIONS_USER_ACTIVITY_TYPES = {
+    "new user": tk._("new user"),
+    "changed user": tk._("changed user"),
+    "follow user": tk._("follow user"),
+}
+
+OPTIONS_GROUP_ACTIVITY_TYPES = {
+    "new group": tk._("new sector"),
+    "changed group": tk._("changed sector"),
+    "deleted group": tk._("deleted sector"),
+    "follow group": tk._("follow sector"),
+}
+
+OPTIONS_ORGANIZATION_ACTIVITY_TYPES = {
+    "new organization": tk._("new government entity"),
+    "changed organization": tk._("changed government entity"),
+    "deleted organization": tk._("deleted government entity"),
+    "follow organization": tk._("follow government entity"),
+}
+
+
 # A dictionary mapping activity_type values from activity dicts to functions
 # for validating the object_id values from those same activity dicts.
 object_id_validators = {

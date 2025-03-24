@@ -140,9 +140,9 @@ def update_tracking(engine: model.Engine, summary_date: datetime.datetime):
                 FROM tracking_raw
                 WHERE CAST(access_timestamp as Date)=%s;
 
-                INSERT INTO tracking_summary 
-                (url, count, tracking_date, tracking_type, running_total, recent_views)
-                SELECT url, COUNT(user_key), tracking_date, tracking_type, 0, 0
+                INSERT INTO tracking_summary
+                (url, count, tracking_date, tracking_type)
+                SELECT url, count(user_key), tracking_date, tracking_type
                 FROM tracking_tmp
                 GROUP BY url, tracking_date, tracking_type;
 

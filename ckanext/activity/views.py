@@ -26,6 +26,9 @@ from ckan.views.dataset import _setup_template_variables
 from ckan.types import Context, Response
 from .model import Activity
 from .logic.validators import (
+    OPTIONS_GROUP_ACTIVITY_TYPES,
+    OPTIONS_ORGANIZATION_ACTIVITY_TYPES,
+    OPTIONS_PACKAGE_ACTIVITY_TYPES,
     VALIDATORS_PACKAGE_ACTIVITY_TYPES,
     VALIDATORS_GROUP_ACTIVITY_TYPES,
     VALIDATORS_ORGANIZATION_ACTIVITY_TYPES
@@ -367,7 +370,7 @@ def package_activity(id: str) -> Union[Response, str]:  # noqa
             "limit": limit,
             "has_more": has_more,
             "activity_type": activity_type,
-            "activity_types": VALIDATORS_PACKAGE_ACTIVITY_TYPES.keys(),
+            "activity_types": OPTIONS_PACKAGE_ACTIVITY_TYPES,
             "newer_activities_url": newer_activities_url,
             "older_activities_url": older_activities_url,
         },
@@ -542,11 +545,11 @@ def group_activity(id: str, group_type: str) -> str:
     except tk.ValidationError as error:
         tk.abort(400, error.message or "")
 
-    filter_types = VALIDATORS_PACKAGE_ACTIVITY_TYPES.copy()
+    filter_types = OPTIONS_PACKAGE_ACTIVITY_TYPES.copy()
     if group_type == 'organization':
-        filter_types.update(VALIDATORS_ORGANIZATION_ACTIVITY_TYPES)
+        filter_types.update(OPTIONS_ORGANIZATION_ACTIVITY_TYPES)
     else:
-        filter_types.update(VALIDATORS_GROUP_ACTIVITY_TYPES)
+        filter_types.update(OPTIONS_GROUP_ACTIVITY_TYPES)
 
     has_more = len(activity_stream) > limit
     # remove the extra item if exists
@@ -576,7 +579,7 @@ def group_activity(id: str, group_type: str) -> str:
         "group_type": real_group_type,
         "group_dict": group_dict,
         "activity_type": activity_type,
-        "activity_types": filter_types.keys(),
+        "activity_types": {k:tk._(v) for k,v in filter_types.items()},
         "newer_activities_url": newer_activities_url,
         "older_activities_url": older_activities_url
     }
@@ -611,7 +614,7 @@ def group_changes(id: str, group_type: str, is_organization: bool) -> str:
     try:
         activity_diff = tk.get_action("activity_diff")(
             context,
-            {"id": activity_id, "object_type": "group", "diff_type": "html"},
+            {"id": activity_id, "object_type": group_type, "diff_type": "html"},
         )
     except tk.ObjectNotFound as e:
         log.info("Activity not found: {} - {}".format(str(e), activity_id))

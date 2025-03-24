@@ -144,8 +144,16 @@ def activity_show(context: Context, data_dict: DataDict) -> AuthResult:
     activity = _get_activity_object(context, data_dict)
     # NB it would be better to have recorded an activity_type against the
     # activity
-    if "package" in activity.activity_type:
+    if 'object_type' in data_dict:
+        object_type = data_dict.get('object_type')
+    elif "package" in activity.activity_type:
         object_type = "package"
+    elif 'organization' in activity.activity_type:
+        object_type = "organization"
+    elif 'group' in activity.activity_type:
+        object_type = "group"
+    elif 'user' in activity.activity_type:
+        object_type = "user"
     else:
         return {"success": False, "msg": "object_type not recognized"}
     return activity_list(

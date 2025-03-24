@@ -8,7 +8,8 @@
   {% set dataset_type = activity.data.package.type or 'dataset' %}
   <span class="dataset">
     <a href="{{ h.url_for(dataset_type ~ '.read', id=activity.object_id ) }}">
-      {{ activity.data.package.title if activity.data.package else _("unknown") }}
+      {% set display_label = (activity.data.package.title_ar if h.lang() =='ar' else  activity.data.package.title) if activity.data.package else _("unknown") %}
+      {{ display_label }}
     </a>
   </span>
 {% endmacro %}
@@ -16,7 +17,7 @@
 {% macro organization(activity) %}
   {% set group_type = group_type or (activity.data.group.type if (activity.data.group and activity.data.group.type) else 'organization') %}
   <a href="{{ h.url_for(group_type ~ '.read', id=activity.object_id) }}">
-    {{ activity.data.group.title if activity.data.group else _('unknown') }}
+    {{ activity.data.group.display_name }}
   </a>
 {% endmacro %}
 
@@ -29,7 +30,7 @@
 {% macro group(activity) %}
 <span class="group">
   <a href="{{ h.url_for('group.read', id=activity.object_id) }}">
-    {{ activity.data.group.title if activity.data.group else _('unknown') }}
+    {{ activity.data.group.display_name }}
   </a>
 </span>
 {% endmacro %}
@@ -44,7 +45,8 @@ object_type - 'package', 'organization', 'group', 'user'
 {% block activity_stream %}
   <ul class="activity">
   {% set can_show_activity_detail = h.check_access('activity_list', {'id': id, 'include_data': True, 'object_type': object_type}) %}
-
+  {% set activity_stream = h.convert_activity_stream_for_display_names(activity_stream) %}
+  
   {% for activity in activity_stream %}
     {%- snippet "snippets/activities/{}.html".format(activity.activity_type.replace(' ', '_')),
       "snippets/activities/fallback.html",

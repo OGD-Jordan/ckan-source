@@ -188,3 +188,37 @@ def compare_group_dicts(
 
 def activity_show_email_notifications() -> bool:
     return tk.config.get("ckan.activity_streams_email_notifications")
+
+from ckan.lib.helpers import helper_functions as h
+def convert_activity_stream_for_display_names(activity_stream):
+    display_names_dict = {}
+    for activity in activity_stream:
+        if 'group' in activity.get('data', {}):
+            group_dict = activity['data']['group']
+            group_id = group_dict.get('id', '')
+
+            if group_id not in display_names_dict:
+                group_obj = model.Group.get(group_id)
+                display_name = group_obj.title
+                if h.lang() == 'ar':
+                    title_arabic = group_obj.extras.get('title_arabic', '')
+                    display_name = title_arabic or display_name 
+                display_names_dict[group_id] = display_name
+            
+            group_dict['display_name'] = display_names_dict[group_id]
+        
+
+        if 'organization' in activity.get('data', {}):
+            group_dict = activity['data']['organization']
+            group_id = group_dict.get('id', '')
+
+            if group_id not in display_names_dict:
+                group_obj = model.Group.get(group_id)
+                display_name = group_obj.title
+                if h.lang() == 'ar':
+                    title_arabic = group_obj.extras.get('title_arabic', '')
+                    display_name = title_arabic or display_name 
+                display_names_dict[group_id] = display_name
+            
+            group_dict['display_name'] = display_names_dict[group_id]
+    return activity_stream
