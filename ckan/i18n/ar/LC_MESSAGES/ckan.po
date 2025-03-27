@@ -4071,15 +4071,15 @@ msgstr "حزمة جديدة"
 
 #: ckanext/activity/logic/validators.py:33
 msgid "changed package"
-msgstr "تم تغيير الحزمة"
+msgstr "حزمة معدلة"
 
 #: ckanext/activity/logic/validators.py:34
 msgid "deleted package"
-msgstr "تم حذف الحزمة"
+msgstr "حزمة محذوفة"
 
 #: ckanext/activity/logic/validators.py:35
 msgid "follow dataset"
-msgstr "متابعة مجموعة البيانات"
+msgstr "متابعة مجموعة بيانات"
 
 #: ckanext/activity/logic/validators.py:39
 msgid "new user"
@@ -4115,11 +4115,11 @@ msgstr "جهة حكومية جديدة"
 
 #: ckanext/activity/logic/validators.py:53
 msgid "changed government entity"
-msgstr "تم تغيير الجهة الحكومية"
+msgstr "الجهة الحكومية معدلة"
 
 #: ckanext/activity/logic/validators.py:54
 msgid "deleted government entity"
-msgstr "تم حذف الجهة الحكومية"
+msgstr "الجهة الحكومية محذوفة"
 
 #: ckanext/activity/logic/validators.py:55
 msgid "follow government entity"

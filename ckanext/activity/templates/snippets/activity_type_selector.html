@@ -18,7 +18,7 @@
     {% for type_, value in activity_types.items() %}
       <option {% if activity_type == type_ %}selected{% endif %} data-url="{{ h.url_for(blueprint, id=id, activity_type=type_) }}">
         {# TODO: Calling humanize gets complex when displaying orgs/groups since the activities also contains dataset activities #}
-        {{ value }}
+        {{ _(value) }}
       </option>
     {% endfor %}
   </select>
