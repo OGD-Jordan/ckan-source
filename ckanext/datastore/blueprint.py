@@ -66,7 +66,8 @@ def dump(resource_id: str):
     except ObjectNotFound:
         abort(404, _('DataStore resource not found'))
 
-    data, errors = dict_fns.validate(request.args.to_dict(), dump_schema())
+    data_dict=request.args.to_dict()
+    data, errors = dict_fns.validate(data_dict, dump_schema())
     if errors:
         abort(
             400, '\n'.join(
@@ -129,11 +130,13 @@ def dump(resource_id: str):
                                 user=user_context),
                         mimetype='application/octet-stream',
                         headers=headers)
-        try:
-            get_action('downloads_resource_increment')(
-                {'ignore_auth': True}, 
-                {'resource_id': resource_id})
-        except: pass
+        
+        if data_dict.get('increment', False):
+            try:
+                get_action('downloads_resource_increment')(
+                    {'ignore_auth': True}, 
+                    {'resource_id': resource_id})
+            except: pass
 
         return resp 
     except ObjectNotFound:

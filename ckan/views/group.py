@@ -591,9 +591,11 @@ def follow(id: str, group_type: str, is_organization: bool) -> Response:
         }
     )
     data_dict = {u'id': id}
+    record = model.Group.get(id)
+    if record:  group_type = record.type 
     try:
         get_action(u'follow_group')(context, data_dict)
-        group_dict = get_action(u'group_show')(context, data_dict)
+        group_dict = get_action(u'%s_show' % group_type)(context, data_dict)
         h.flash_success(
             _(u"You are now following {0}").format(group_dict['title']))
 
@@ -603,7 +605,7 @@ def follow(id: str, group_type: str, is_organization: bool) -> Response:
         h.flash_error(error_message)
     except NotAuthorized as e:
         h.flash_error(e.message)
-    return h.redirect_to(u'group.read', id=id)
+    return h.redirect_to(u'%s.read' % group_type, id=id)
 
 
 def unfollow(id: str, group_type: str, is_organization: bool) -> Response:
@@ -617,9 +619,11 @@ def unfollow(id: str, group_type: str, is_organization: bool) -> Response:
         }
     )
     data_dict = {u'id': id}
+    record = model.Group.get(id)
+    if record:  group_type = record.type
     try:
         get_action(u'unfollow_group')(context, data_dict)
-        group_dict = get_action(u'group_show')(context, data_dict)
+        group_dict = get_action(u'%s_show' %group_type)(context, data_dict)
         h.flash_success(
             _(u"You are no longer following {0}").format(group_dict['title']))
         id = group_dict['name']
@@ -632,7 +636,7 @@ def unfollow(id: str, group_type: str, is_organization: bool) -> Response:
     except NotAuthorized as e:
         error_message = e.message or ''
         base.abort(403, _(error_message))
-    return h.redirect_to(u'group.read', id=id)
+    return h.redirect_to(u'%s.read' %group_type, id=id)
 
 
 def followers(id: str, group_type: str, is_organization: bool) -> str:
