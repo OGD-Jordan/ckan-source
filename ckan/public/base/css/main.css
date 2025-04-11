@@ -11233,7 +11233,7 @@ a.tag:hover {
   padding: 1.5rem;
 }
 .module-content .add-to-group .btn-primary {
-  margin-bottom: 1.5rem;
+  margin: 1.5rem 0
 }
 
 .module:first-child .module-heading {
