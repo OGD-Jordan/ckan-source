@@ -12373,13 +12373,18 @@ select[data-module=autocomplete] {
 }
 .resource-upload-field .btn-remove-url {
   position: absolute;
-  margin-right: 0;
+  margin-inline-start: 0;
   margin-top: 11px;
   top: 1.5rem;
-  right: 0.25rem;
+  inset-inline-end: 0.25rem;
   padding: 0 12px;
   border-radius: 100px;
 }
+
+.resource-upload-field input[type="url"] ~ .btn-remove-url {
+  right: 0.25rem !important;
+}
+
 .resource-upload-field .btn-remove-url .icon-remove {
   margin-right: 0;
 }
