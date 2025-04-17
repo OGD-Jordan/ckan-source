@@ -14167,3 +14167,10 @@ td.diff_header {
   gap: 0.5rem;
   align-items: center;
 }
+
+.select2-results .select2-result-label {
+  width: 315px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
