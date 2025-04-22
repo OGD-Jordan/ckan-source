@@ -12562,6 +12562,10 @@ select[data-module=autocomplete] {
   width: 50%;
 }
 
+.badge[data-format] {
+  background-color: #5e5e5e;
+}
+
 .badge[data-format=html],
 .badge[data-format*=html] {
   background-color: #2E759E;
@@ -12927,10 +12931,18 @@ td.diff_header {
   padding-left: 0.5rem;
 }
 .toolbar .breadcrumb li:not(:first-child)::before {
-  float: left;
-  padding-right: 0.5rem;
-  color: #6c757d;
-  content: var(--bs-breadcrumb-divider, "/") /* rtl: var(--bs-breadcrumb-divider, "/") */;
+  content: var(--bs-breadcrumb-divider, "") !important /* rtl: var(--bs-breadcrumb-divider, "/") */;
+}
+
+.toolbar .breadcrumb li:not(:first-child)::after {
+  float: right; 
+  padding-left: 0.5rem;
+  color: #6c757d !important;
+  content: var(--bs-breadcrumb-divider, "/") !important /* rtl: var(--bs-breadcrumb-divider, "/") */;
+}
+
+.toolbar .breadcrumb .active::after {
+  background-color: transparent !important;
 }
 
 .toolbar .breadcrumb .active {

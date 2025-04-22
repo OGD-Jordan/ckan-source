@@ -12576,6 +12576,10 @@ select[data-module=autocomplete] {
   width: 50%;
 }
 
+.badge[data-format] {
+  background-color: #5e5e5e;
+}
+
 .badge[data-format=html],
 .badge[data-format*=html] {
   background-color: #2E759E;
