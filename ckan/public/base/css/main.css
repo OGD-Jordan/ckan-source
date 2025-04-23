@@ -11395,7 +11395,7 @@ a.tag:hover {
 
 .media-item, .module-item {
   position: relative;
-  float: left;
+  float: unset;
   width: 178px;
   height: 210px;
   padding: 0.75rem;
