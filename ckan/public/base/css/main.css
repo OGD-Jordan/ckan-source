@@ -11402,6 +11402,7 @@ a.tag:hover {
   margin: 0 0 0.75rem 0.75rem;
   background-color: white;
   border-radius: 3px;
+  left: unset !important;
 }
 .media-item span.count, .module-item span.count {
   color: #999;
