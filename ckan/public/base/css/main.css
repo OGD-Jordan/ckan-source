@@ -11378,8 +11378,9 @@ a.tag:hover {
 }
 
 .media-grid, .module-grid {
+  margin: 0;
   list-style: none;
-  padding: 0px;
+  padding-left: 0px;
   min-height: 205px;
   padding-top: 0.75rem;
   background: #fbfbfb url("../../../base/images/bg.png");
