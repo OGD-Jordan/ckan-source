@@ -205,7 +205,7 @@ def migrate_dataset(dataset_name, errors):
                 del res[u'revision_timestamp']
 
         actor = model.Session.query(model.User).get(activity[u'user_id'])
-        actor_name = actor.name if actor else activity[u'user_id']
+        actor_name = (actor.fullname or actor.name) if actor else activity[u'user_id']
 
         # add the data to the Activity, just as we do in
         # Activity::activity_stream_item()

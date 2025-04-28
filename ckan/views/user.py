@@ -324,8 +324,8 @@ class EditView(MethodView):
         # We are recognizing sysadmin user
         # by email_changed variable.. this returns True
         # and we are entering the validation.
-        if (data_dict[u'password1']
-                and data_dict[u'password2']) or email_changed:
+        if (data_dict.get(u'password1', '')
+                and data_dict.get(u'password2', '')) or email_changed:
 
             # getting the identity for current logged user
             identity = {

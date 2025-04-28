@@ -1,5 +1,5 @@
 {%if type == 'user' %}
-  <h4>{{ dict.name }}</h4>
+  <h4>{{ dict.fullname or dict.name }}</h4>
   {% snippet 'snippets/context/user.html', id=dict.id, name=dict.name, about=dict.about, is_me='false', num_followers=dict.num_followers, number_created_packages=dict.number_created_packages %}
 {%elif type == 'dataset' %}
   <h4>{{ dict.title }}</h4>

@@ -138,7 +138,7 @@ class Activity(domain_object.DomainObject, BaseModel):  # type: ignore
                 "package": dictized_package,
                 # We keep the acting user name around so that actions can be
                 # properly displayed even if the user is deleted in the future.
-                "actor": actor.name if actor else None,
+                "actor": (actor.fullname or actor.name) if actor else None,
             },
         )
 

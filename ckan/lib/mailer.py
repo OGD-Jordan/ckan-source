@@ -215,7 +215,7 @@ def get_reset_link_body(user: model.User) -> str:
         'reset_link': get_reset_link(user),
         'site_title': config.get('ckan.site_title'),
         'site_url': config.get('ckan.site_url'),
-        'user_name': user.name,
+        'user_name': user.fullname or user.name,
     }
     # NOTE: This template is translated
     return render('emails/reset_password.txt', extra_vars)
@@ -228,7 +228,7 @@ def get_invite_body(user: model.User,
         'reset_link': get_reset_link(user),
         'site_title': config.get('ckan.site_title'),
         'site_url': config.get('ckan.site_url'),
-        'user_name': user.name,
+        'user_name': user.fullname or user.name,
     }
 
     if role:
