@@ -11,6 +11,7 @@ import ckan.plugins as p
 log = logging.getLogger(__name__)
 ignore_empty = p.toolkit.get_validator('ignore_empty')
 unicode_safe = p.toolkit.get_validator('unicode_safe')
+not_empty = p.toolkit.get_validator('not_empty')
 
 
 @p.toolkit.blanket.config_declarations
@@ -28,7 +29,7 @@ class ImageView(p.SingletonPlugin):
         return {'name': 'image_view',
                 'title': p.toolkit._('Image'),
                 'icon': 'image',
-                'schema': {'image_url': [ignore_empty, unicode_safe]},
+                'schema': {'image_url': [not_empty, unicode_safe]},
                 'iframed': False,
                 'always_available': True,
                 'default_title': p.toolkit._('Image'),

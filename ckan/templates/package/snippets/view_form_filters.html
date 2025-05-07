@@ -33,6 +33,7 @@
 {% set templateFilterInputs = selectAndInput('filter_fields', 'filter_values', selectOptions=fields) %}
 {% set filters = resource_view['filters'] %}
 
+{% if fields %}
 <div
   data-module = "resource-view-filters-form"
   data-module-resource-id = "{{ resource['id'] }}"
@@ -46,3 +47,4 @@
           label=_('Filters'), options=fields, filters=filters, classes=["control-filters"])
   }}
 </div>
+{% endif %}

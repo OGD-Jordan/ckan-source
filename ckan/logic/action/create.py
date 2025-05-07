@@ -326,6 +326,17 @@ def resource_create(context: Context,
     try:
         context['defer_commit'] = True
         context['use_cache'] = False
+        _get_action('package_patch')(context, {'id':pkg_dict['id']})
+        context.pop('defer_commit')
+    except ValidationError as e:
+        e.error_dict = {
+            _('Dataset'): [_('Dataset metadata must be completed first.')]
+        }
+        raise e
+
+    try:
+        context['defer_commit'] = True
+        context['use_cache'] = False
         _get_action('package_update')(context, pkg_dict)
         context.pop('defer_commit')
     except ValidationError as e:
