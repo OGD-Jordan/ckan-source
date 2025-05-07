@@ -2527,7 +2527,7 @@ msgstr "آخر تحديث للبيانات الوصفية"
 #: ckan/templates/package/snippets/additional_info.html:74
 #: ckanext/datatablesview/templates/datatables/datatables_view.html:91
 msgid "Created"
-msgstr "أنشئت"
+msgstr "انشأت"
 
 #: ckan/templates/package/resource_read.html:188
 #: ckan/templates/package/snippets/resource_form.html:45
