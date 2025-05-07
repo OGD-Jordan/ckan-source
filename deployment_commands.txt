@@ -1,0 +1,41 @@
+cd ckanext-sorting
+git pull origin main
+cd ../ckanext-archiver/
+git pull origin master
+cd ../ckanext-comments/
+git pull origin master
+cd ../ckanext-issues/
+git pull origin master
+cd ../ckanext-licenses/
+git pull origin main
+cd ../ckanext-login/
+git pull origin master
+cd ../ckanext-ogddashboard/
+git pull origin master
+cd ../ckanext-ogdnotifications/
+git pull origin master
+cd ../ckanext-orgextend/
+git pull origin master
+cd ../ckanext-qa/
+git pull origin master
+cd ../ckanext-quality_portal/
+git pull origin master
+cd ../ckanext-rating/
+git pull origin master
+cd ../ckanext-requests/
+git pull origin master
+cd ../ckanext-showcase/
+git pull origin master
+cd ../ckanext-theme/
+git pull origin master
+cd ../ckanext-usergroups/
+git pull origin master
+cd ../ckanext-pages/
+git pull origin master
+cd ../ckanext-xloader/
+git pull origin master
+cd ..
+sudo chmod 777 -R ckanext-licenses/ckanext/licenses/data/
+service supervisor restart
+service nginx restart
+supervisorctl restart ckan-worker:*
