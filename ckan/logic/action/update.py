@@ -678,9 +678,13 @@ def _group_or_org_update(
     except AttributeError:
         schema = group_plugin.form_to_db_schema()
 
+    data_dict1 = data_dict.copy()
     upload = uploader.get_uploader('group')
     upload.update_data_dict(data_dict, 'image_url',
                             'image_upload', 'clear_upload')
+
+    data_dict1.update(data_dict)
+    data_dict = data_dict1
 
     if is_org:
         _check_access('organization_update', context, data_dict)
