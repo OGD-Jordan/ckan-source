@@ -237,7 +237,26 @@ if (typeof Slick === "undefined") {
       $focusSink = $("<div tabIndex='0' hideFocus style='position:fixed;width:0;height:0;top:0;left:0;outline:0;'></div>").appendTo($container);
 
       $headerScroller = $("<div class='slick-header ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
-      $headers = $("<div class='slick-header-columns' style='left:-1000px' />").appendTo($headerScroller);
+      var headersLeftStyle;
+
+      var isRtl = $('html').css('direction') === "rtl";
+      if (isRtl) {
+        // Find the last column in the first row
+        var lastColumnIndex = columns.length - 1;
+        var lastColumnOffset = 0;
+
+        for (var i = 0; i <= lastColumnIndex; i++) {
+          lastColumnOffset += columns[i].width;
+        }
+
+        // SlickGrid usually translates the header container left to simulate scrolling
+        // In RTL mode, we mimic the same by shifting it from the right
+        headersLeftStyle = "left:" + (1315 - getCanvasWidth() )+ "px";
+      } else {
+        headersLeftStyle = "left:-1000px";
+      }
+
+      $headers = $("<div class='slick-header-columns' style='" + headersLeftStyle + "' />").appendTo($headerScroller);
       $headers.width(getHeadersWidth());
 
       $headerRowScroller = $("<div class='slick-headerrow ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
@@ -405,23 +424,29 @@ if (typeof Slick === "undefined") {
       return options.fullWidthRows ? Math.max(rowWidth, availableWidth) : rowWidth;
     }
 
-    function updateCanvasWidth(forceColumnWidthsUpdate) {
-      var oldCanvasWidth = canvasWidth;
-      canvasWidth = getCanvasWidth();
+function updateCanvasWidth(forceColumnWidthsUpdate) {
+  var oldCanvasWidth = canvasWidth;
+  canvasWidth = getCanvasWidth();
 
-      if (canvasWidth != oldCanvasWidth) {
-        $canvas.width(canvasWidth);
-        $headerRow.width(canvasWidth);
-        $headers.width(getHeadersWidth());
-        viewportHasHScroll = (canvasWidth > viewportW - scrollbarDimensions.width);
-      }
+  if (canvasWidth !== oldCanvasWidth) {
+    $canvas.width(canvasWidth);
+    $headerRow.width(canvasWidth);
+    $headers.width(getHeadersWidth());
+    viewportHasHScroll = (canvasWidth > viewportW - scrollbarDimensions.width);
+  }
 
-      $headerRowSpacer.width(canvasWidth + (viewportHasVScroll ? scrollbarDimensions.width : 0));
+  $headerRowSpacer.width(canvasWidth + (viewportHasVScroll ? scrollbarDimensions.width : 0));
 
-      if (canvasWidth != oldCanvasWidth || forceColumnWidthsUpdate) {
-        applyColumnWidths();
-      }
-    }
+  if (canvasWidth !== oldCanvasWidth || forceColumnWidthsUpdate) {
+    applyColumnWidths();
+  }
+
+  // Update header's left style for RTL
+  if (isRtl) {
+    var leftOffset = 1315 - canvasWidth;
+    $headers.css("left", leftOffset + "px");
+  }
+}
 
     function disableSelection($target) {
       if ($target && $target.jquery) {

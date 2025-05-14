@@ -76,7 +76,10 @@ this.ckan.module('resource-view-filters', function (jQuery) {
 
       // Can't use push because we need to create a new array, as we're
       // modifying it.
-      theseFilters = theseFilters.concat([undefined]);
+      if (theseFilters.length == 0) {
+        theseFilters = theseFilters.concat([undefined]);
+      }
+      
       theseFilters.forEach(function (value, i) {
         var dropdown = $('<input type="hidden" name="'+filterName+'"></input>');
 

@@ -188,11 +188,11 @@ class ReclineGraphView(ReclineViewBase):
         _load_declaration(declaration)
 
     graph_types = [{'value': 'lines-and-points',
-                    'text': 'Lines and points'},
-                   {'value': 'lines', 'text': 'Lines'},
-                   {'value': 'points', 'text': 'Points'},
-                   {'value': 'bars', 'text': 'Bars'},
-                   {'value': 'columns', 'text': 'Columns'}]
+                    'text': _('Lines and points')},
+                   {'value': 'lines', 'text': _('Lines')},
+                   {'value': 'points', 'text': _('Points')},
+                   {'value': 'bars', 'text': _('Bars')},
+                   {'value': 'columns', 'text': _('Columns')}]
 
     datastore_fields = []
 
