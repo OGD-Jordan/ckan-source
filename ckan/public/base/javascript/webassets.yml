@@ -17,6 +17,7 @@ main:
     - plugins/jquery.masonry.js
     - plugins/jquery.form-warning.js
     - plugins/jquery.images-loaded.js
+    - plugins/jquery-ui.min.js
     - sandbox.js
     - module.js
     - pubsub.js
@@ -24,6 +25,7 @@ main:
     - i18n.js
     - notify.js
     - main.js
+    - datepicker-i18n.js
 
 ckan:
   filters: rjsmin

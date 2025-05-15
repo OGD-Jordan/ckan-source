@@ -1,8 +1,12 @@
 main:
   filters: cssrewrite
   output: base/%(version)s_main.css
-  contents: main.css
+  contents:
+    - main.css
+    - jquery-ui.min.css
 main-rtl:
   filters: cssrewrite
   output: base/%(version)s_main-rtl.css
-  contents: main-rtl.css
+  contents:
+    - main-rtl.css
+    - jquery-ui.min.css
