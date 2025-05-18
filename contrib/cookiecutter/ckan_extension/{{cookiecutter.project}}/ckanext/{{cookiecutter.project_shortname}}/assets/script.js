@@ -1,10 +1,1 @@
-ckan.module("{{cookiecutter.project_shortname}}-module", function ($, _) {
-  "use strict";
-  return {
-    options: {
-      debug: false,
-    },
-
-    initialize: function () {},
-  };
-});
+ckan.module("{{cookiecutter.project_shortname}}-module",(function(t,e){"use strict";return{options:{debug:!1},initialize:function(){}}}));

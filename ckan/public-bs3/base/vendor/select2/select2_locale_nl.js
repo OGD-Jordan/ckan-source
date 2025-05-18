@@ -1,17 +1,1 @@
-/**
- * Select2 Dutch translation
- */
-(function ($) {
-    "use strict";
-
-    $.fn.select2.locales['nl'] = {
-        formatNoMatches: function () { return "Geen resultaten gevonden"; },
-        formatInputTooShort: function (input, min) { var n = min - input.length; return "Vul nog " + n + " karakter" + (n == 1? "" : "s") + " in"; },
-        formatInputTooLong: function (input, max) { var n = input.length - max; return "Haal " + n + " karakter" + (n == 1? "" : "s") + " weg"; },
-        formatSelectionTooBig: function (limit) { return "Maximaal " + limit + " item" + (limit == 1 ? "" : "s") + " toegestaan"; },
-        formatLoadMore: function (pageNumber) { return "Meer resultaten laden…"; },
-        formatSearching: function () { return "Zoeken…"; }
-    };
-
-    $.extend($.fn.select2.defaults, $.fn.select2.locales['nl']);
-})(jQuery);
+!function(e){"use strict";e.fn.select2.locales.nl={formatNoMatches:function(){return"Geen resultaten gevonden"},formatInputTooShort:function(e,n){var t=n-e.length;return"Vul nog "+t+" karakter"+(1==t?"":"s")+" in"},formatInputTooLong:function(e,n){var t=e.length-n;return"Haal "+t+" karakter"+(1==t?"":"s")+" weg"},formatSelectionTooBig:function(e){return"Maximaal "+e+" item"+(1==e?"":"s")+" toegestaan"},formatLoadMore:function(e){return"Meer resultaten laden…"},formatSearching:function(){return"Zoeken…"}},e.extend(e.fn.select2.defaults,e.fn.select2.locales.nl)}(jQuery);

@@ -1,7 +1,1 @@
-.wy-side-nav-search > .sidebar-admonition {
-  color: black;
-  }
-.wy-side-nav-search .admonition .last {
-    text-align: left;
-    font-size: 85%;
-}
+.wy-side-nav-search>.sidebar-admonition{color:#000}.wy-side-nav-search .admonition .last{text-align:left;font-size:85%}

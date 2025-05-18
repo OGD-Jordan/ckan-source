@@ -1,10 +1,1 @@
-"use strict";
-
-(function (jQuery) {
-
-    jQuery.fn.greenify = function() {
-      this.css( "color", "green" );
-      return this;
-    };
-
-})(this.jQuery);
+"use strict";!function(n){n.fn.greenify=function(){return this.css("color","green"),this}}(this.jQuery);

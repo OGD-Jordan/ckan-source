@@ -1,3 +1,6 @@
+service supervisor stop
+cd ckan
+git pull origin OGD
 cd ckanext-sorting
 git pull origin main
 cd ../ckanext-archiver/

@@ -1,1 +1,1 @@
-console.log('ExampleTheme loaded');
+console.log("ExampleTheme loaded");

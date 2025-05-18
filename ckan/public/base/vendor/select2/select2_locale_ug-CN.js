@@ -1,16 +1,1 @@
-/**
- * Select2 Uyghur translation
- */
-(function ($) {
-    "use strict";
-    $.fn.select2.locales['ug-CN'] = {
-        formatNoMatches: function () { return "ماس كېلىدىغان ئۇچۇر تېپىلمىدى"; },
-        formatInputTooShort: function (input, min) { var n = min - input.length; return "يەنە " + n + " ھەرپ كىرگۈزۈڭ";},
-        formatInputTooLong: function (input, max) { var n = input.length - max; return "" + n + "ھەرپ ئۆچۈرۈڭ";},
-        formatSelectionTooBig: function (limit) { return "ئەڭ كۆپ بولغاندا" + limit + " تال ئۇچۇر تاللىيالايسىز"; },
-        formatLoadMore: function (pageNumber) { return "ئۇچۇرلار ئوقۇلىۋاتىدۇ…"; },
-        formatSearching: function () { return "ئىزدەۋاتىدۇ…"; }
-    };
-
-    $.extend($.fn.select2.defaults, $.fn.select2.locales['ug-CN']);
-})(jQuery);
+!function(t){"use strict";t.fn.select2.locales["ug-CN"]={formatNoMatches:function(){return"ماس كېلىدىغان ئۇچۇر تېپىلمىدى"},formatInputTooShort:function(t,n){return"يەنە "+(n-t.length)+" ھەرپ كىرگۈزۈڭ"},formatInputTooLong:function(t,n){return t.length-n+"ھەرپ ئۆچۈرۈڭ"},formatSelectionTooBig:function(t){return"ئەڭ كۆپ بولغاندا"+t+" تال ئۇچۇر تاللىيالايسىز"},formatLoadMore:function(t){return"ئۇچۇرلار ئوقۇلىۋاتىدۇ…"},formatSearching:function(){return"ئىزدەۋاتىدۇ…"}},t.extend(t.fn.select2.defaults,t.fn.select2.locales["ug-CN"])}(jQuery);
