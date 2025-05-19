@@ -13861,6 +13861,9 @@ td.diff_header {
 .resource-view-filters .resource-view-filter-values .select2-container .select2-search-choice-close {
   left: auto;
 }
+.form-group .select2-container {
+  margin-top: 1rem;
+}
 
 .resource-view-list.reordering {
   margin: -10px -10px 0;
