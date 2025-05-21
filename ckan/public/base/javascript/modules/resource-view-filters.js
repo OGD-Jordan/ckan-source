@@ -10,6 +10,9 @@ this.ckan.module('resource-view-filters', function (jQuery) {
         filtersDiv = $('<div></div>');
 
     var filters = ckan.views.filters.get();
+    for (const key in filters) {
+      filters[key] = filters[key].filter(value => !!value);
+    }
     _appendDropdowns(filtersDiv, resourceId, dropdownTemplate, fields, filters);
     var addFilterButton = _buildAddFilterButton(self, filtersDiv, addFilterTemplate,
                                                 fields, filters, function (evt) {
@@ -131,7 +134,12 @@ this.ckan.module('resource-view-filters', function (jQuery) {
             var records = data.result.records,
                 hasMore = (records.length == queryLimit),
                 results;
-
+            
+            const filteredArr = records.filter(obj =>
+              Object.values(obj).every(value => value !== null)
+            );
+            records = filteredArr;
+            
             results = $.map(records, function (record) {
               return { id: record[filterName], text: String(record[filterName]) };
             });

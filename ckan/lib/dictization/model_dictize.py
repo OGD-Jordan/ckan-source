@@ -212,20 +212,30 @@ def package_dictize(
     result_dict["extras"] = extras_list_dictize(result, context)
 
     # groups
-    member = model.member_table
-    group = model.group_table
-    q = select([group, member.c["capacity"]],
-               from_obj=member.join(group, group.c["id"] == member.c["group_id"])
-               ).where(member.c["table_id"] == pkg.id)\
-                .where(member.c["state"] == 'active') \
-                .where(group.c["is_organization"] == False)
-    result = execute(q, member, context)
+
+    result = model.Session.query(model.Group) \
+        .join(model.Member, model.Member.group_id == model.Group.id)\
+        .filter(model.Member.state =='active')\
+        .filter(model.Member.table_id ==pkg.id)\
+        .filter(model.Group.is_organization ==False).all()
+        
+    # member = model.member_table
+    # group = model.group_table
+
+    # q = select([group, member.c["capacity"]],
+    #            from_obj=member.join(group, group.c["id"] == member.c["group_id"])
+    #            ).where(member.c["table_id"] == pkg.id)\
+    #             .where(member.c["state"] == 'active') \
+    #             .where(group.c["is_organization"] == False)
+    # result = execute(q, member, context)
+
+
     context['with_capacity'] = False
     # no package counts as cannot fetch from search index at the same
     # time as indexing to it.
     # tags, extras and sub-groups are not included for speed
     result_dict["groups"] = group_list_dictize(result, context,
-                                               with_package_counts=False)
+                                               with_package_counts=False, include_extras=True)
 
     # owning organization
     group = model.group_table

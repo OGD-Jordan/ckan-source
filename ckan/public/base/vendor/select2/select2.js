@@ -2129,7 +2129,8 @@ the specific language governing permissions and limitations under the Apache Lic
             }
         }
     });
-
+    
+    let isRtl = $('html').css('direction') === "rtl";
     SingleSelect2 = clazz(AbstractSelect2, {
 
         // single
@@ -2139,7 +2140,8 @@ the specific language governing permissions and limitations under the Apache Lic
                 "class": "select2-container"
             }).html([
                 "<a href='javascript:void(0)' class='select2-choice' tabindex='-1'>",
-                "   <span class='select2-chosen'>&#160;</span><abbr class='select2-search-choice-close'></abbr>",
+                "   <span class='select2-chosen'>&#160;</span>",
+                `   <abbr class='select2-search-choice-close' style=${isRtl ? 'left:20px !important': ''}></abbr>`, 
                 "   <span class='select2-arrow' role='presentation'><b role='presentation'></b></span>",
                 "</a>",
                 "<label for='' class='select2-offscreen'></label>",
