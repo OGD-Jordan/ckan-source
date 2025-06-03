@@ -413,6 +413,7 @@ def resource_view_create(
     schema: Schema = context.get('schema', default)
     plugin_schema: Schema = view_plugin.info().get('schema', {})
     schema.update(plugin_schema)
+    schema.update({'__extras': []})
 
     data, errors = _validate(data_dict, schema, context)
     if errors:

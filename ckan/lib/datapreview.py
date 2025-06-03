@@ -213,7 +213,10 @@ def add_views_to_resource(context: Context,
             view = {'resource_id': resource_dict['id'],
                     'view_type': view_info['name'],
                     'title': view_info.get('default_title', _('View')),
-                    'description': view_info.get('default_description', '')}
+                    'description': view_info.get('default_description', ''),
+                    'image_url': resource_dict.get('url'),
+                    'url': resource_dict.get('url'),
+                    }
 
             view_dict = logic.get_action('resource_view_create')(context, view)
             created_views.append(view_dict)
