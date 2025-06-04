@@ -4,9 +4,11 @@ main:
   contents:
     - main.css
     - jquery-ui.min.css
+    - intlTelInput.min.css
 main-rtl:
   filters: cssrewrite
   output: base/%(version)s_main-rtl.css
   contents:
     - main-rtl.css
     - jquery-ui.min.css
+    - intlTelInput.min.css

@@ -100,4 +100,16 @@ $(function() {
   $(".hide-filters").click(function() {
     $("body").removeClass("filters-modal");
   });
+
+  $("#field-phone_number").each(function () {
+    var input = this;
+    var isArabic = document.documentElement.lang === "ar";
+
+    var iti = window.intlTelInput(input, {
+      initialCountry: "jo",
+      separateDialCode: true,
+      ...(isArabic && {i18n: countryTranslations}),
+    });
+  });
+
 });

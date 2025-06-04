@@ -18,6 +18,7 @@ main:
     - plugins/jquery.form-warning.js
     - plugins/jquery.images-loaded.js
     - plugins/jquery-ui.min.js
+    - plugins/intlTelInput.min.js
     - sandbox.js
     - module.js
     - pubsub.js
