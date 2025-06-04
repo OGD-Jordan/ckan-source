@@ -100,4 +100,38 @@ $(function() {
   $(".hide-filters").click(function() {
     $("body").removeClass("filters-modal");
   });
+
+$(function () {
+  $("#field-phone_number").each(function () {
+    var input = this;
+    var isArabic = document.documentElement.lang === "ar";
+    var countryCode = $("#field-country_code").val();
+
+    var iti = window.intlTelInput(input, {
+      initialCountry: countryCode ? undefined : "jo",
+      separateDialCode: true,
+      ...(isArabic && { i18n: countryTranslations }),
+    });
+
+    // Set initial country if country_code exists
+    if (countryCode) {
+      setTimeout(() => {
+        const allCountries = window.intlTelInput.getCountryData();
+        const match = allCountries.find(c => "+" + c.dialCode === countryCode);
+        if (match) {
+          iti.setCountry(match.iso2);
+        }
+      }, 1);
+    }
+
+    // On dropdown change, update hidden field
+    input.addEventListener("countrychange", function () {
+      $("#field-country_code").val("+" + iti.getSelectedCountryData().dialCode);
+    });
+  });
+
+});
+
+
+
 });
