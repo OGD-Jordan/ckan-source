@@ -110,6 +110,13 @@ $(function() {
       separateDialCode: true,
       ...(isArabic && {i18n: countryTranslations}),
     });
+
+    $(input).closest('form').on('submit', function (e) {
+      const dialCode = iti.getSelectedCountryData().dialCode;
+      const phoneNumber = $(input).val();
+
+      $(input).val(`+${dialCode}${phoneNumber}`);
+    });
   });
 
 });
