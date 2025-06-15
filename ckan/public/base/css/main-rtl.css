@@ -7512,11 +7512,11 @@ textarea.form-control-lg {
 }
 
 .text-start {
-  text-align: left !important;
+  text-align: right !important;
 }
 
 .text-end {
-  text-align: right !important;
+  text-align: left !important;
 }
 
 .text-center {

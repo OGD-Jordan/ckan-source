@@ -347,6 +347,7 @@ class EditView(MethodView):
                 return self.get(id, data_dict, errors, error_summary)
 
         try:
+            data_dict['phone_number'] = (data_dict.get('country_code', '+962') or '+962') + '-'+  data_dict.get('phone_number', '')
             user = logic.get_action(u'user_update')(context, data_dict)
         except logic.NotAuthorized:
             base.abort(403, _(u'Unauthorized to edit user %s') % id)
@@ -385,6 +386,8 @@ class EditView(MethodView):
             base.abort(404, _(u'User not found'))
 
         errors = errors or {}
+        if data and '-' in data.get('phone_number', ''):
+            data['country_code'], data['phone_number'] = data['phone_number'].split('-') 
         vars: dict[str, Any] = {
             u'data': data,
             u'errors': errors,
@@ -615,7 +618,7 @@ def delete(id: str) -> Union[Response, Any]:
         if current_user.id == id:  # type: ignore
             return logout()
         else:
-            user_index = h.url_for(u'user.index')
+            user_index = h.url_for(u'ogddashboard.router')
             return h.redirect_to(user_index)
 
     # TODO: Remove
