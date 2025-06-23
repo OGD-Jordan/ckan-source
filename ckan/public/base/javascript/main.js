@@ -107,11 +107,15 @@ $(function () {
     var isArabic = document.documentElement.lang === "ar";
     var countryCode = $("#field-country_code").val();
 
-    var iti = window.intlTelInput(input, {
+    var config = {
       initialCountry: countryCode ? undefined : "jo",
       separateDialCode: true,
-      ...(isArabic && { i18n: countryTranslations }),
-    });
+      i18n: countryTranslations,
+    }
+    if (isArabic) {
+      config['i18n'] = countryTranslations
+    }
+    var iti = window.intlTelInput(input, config);
 
     // Set initial country if country_code exists
     if (countryCode) {

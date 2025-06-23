@@ -219,16 +219,6 @@ def package_dictize(
         .filter(model.Member.table_id ==pkg.id)\
         .filter(model.Group.is_organization ==False).all()
         
-    # member = model.member_table
-    # group = model.group_table
-
-    # q = select([group, member.c["capacity"]],
-    #            from_obj=member.join(group, group.c["id"] == member.c["group_id"])
-    #            ).where(member.c["table_id"] == pkg.id)\
-    #             .where(member.c["state"] == 'active') \
-    #             .where(group.c["is_organization"] == False)
-    # result = execute(q, member, context)
-
 
     context['with_capacity'] = False
     # no package counts as cannot fetch from search index at the same
