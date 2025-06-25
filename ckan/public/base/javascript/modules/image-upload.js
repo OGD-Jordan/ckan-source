@@ -84,7 +84,7 @@ this.ckan.module('image-upload', function($) {
         .insertBefore(this.field_url_input);
 
       // Update the main label (this is displayed when no data/image has been uploaded/linked)
-      $('label[for="field-image-upload"]').text(options.upload_label || this._('Image'));
+      $('label[for="field-image-upload"]', this.el).text(options.upload_label || this._('Image'));
 
       // Setup the file input
       this.input
@@ -237,6 +237,8 @@ this.ckan.module('image-upload', function($) {
         .add(this.button_url)
         .add(this.input)
         .show();
+      $('label[for="field-image-upload"]', this.el).text(this.options.upload_label || this._('Image'));
+
     },
 
     /* Show only the URL field, hiding all others
