@@ -238,35 +238,35 @@ if (typeof Slick === "undefined") {
 
       $headerScroller = $("<div class='slick-header ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
       var headersLeftStyle;
-
+      
       var isRtl = $('html').css('direction') === "rtl";
-      if (isRtl) {
-        // Find the last column in the first row
-        var lastColumnIndex = columns.length - 1;
-        var lastColumnOffset = 0;
+      headersLeftStyle = isRtl ? "left:0px; right:0px;" : "left:-1000px";
+      $container.css("direction", isRtl ? "rtl" : "ltr");
 
-        for (var i = 0; i <= lastColumnIndex; i++) {
-          lastColumnOffset += columns[i].width;
-        }
 
-        // SlickGrid usually translates the header container left to simulate scrolling
-        // In RTL mode, we mimic the same by shifting it from the right
-        headersLeftStyle = "left:" + (1315 - getCanvasWidth() )+ "px";
-      } else {
-        headersLeftStyle = "left:-1000px";
-      }
-
-      $headers = $("<div class='slick-header-columns' style='" + headersLeftStyle + "' />").appendTo($headerScroller);
+      $headers = $("<div dir='ltr' class='slick-header-columns' style='" + headersLeftStyle + "' />").appendTo($headerScroller);
       $headers.width(getHeadersWidth());
+      var viewportWidth = $('.slick-viewport').width();
 
+      $headers.css({
+        'left': 'auto',
+        'right': canvasWidth - viewportWidth + 'px', // mimic left scroll offset
+      })
+      // css("direction", "ltr");
+      
       $headerRowScroller = $("<div class='slick-headerrow ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
+      $headerRowScroller.css("direction", "ltr");
       $headerRow = $("<div class='slick-headerrow-columns' />").appendTo($headerRowScroller);
+      $headerRow.css("direction", "ltr");
       $headerRowSpacer = $("<div style='display:block;height:1px;position:absolute;top:0;left:0;'></div>")
-          .css("width", getCanvasWidth() + scrollbarDimensions.width + "px")
-          .appendTo($headerRowScroller);
-
+      .css("width", getCanvasWidth() + scrollbarDimensions.width + "px")
+      .appendTo($headerRowScroller);
+      $headerRowSpacer.css("direction", "ltr");
+      
       $topPanelScroller = $("<div class='slick-top-panel-scroller ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
+      $topPanelScroller.css("direction", "ltr");
       $topPanel = $("<div class='slick-top-panel' style='width:10000px' />").appendTo($topPanelScroller);
+      $topPanel.css("direction", "ltr");
 
       if (!options.showTopPanel) {
         $topPanelScroller.hide();
@@ -277,9 +277,18 @@ if (typeof Slick === "undefined") {
       }
 
       $viewport = $("<div class='slick-viewport' style='width:100%;overflow:auto;outline:0;position:relative;;'>").appendTo($container);
+      if (isRtl) {
+        $viewport.on('scroll', function () {
+          const scrollRight = $(this).scrollLeft();
+          $('.slick-header-columns').css({
+            'right': scrollRight + 'px',
+            'left': 'auto',
+          });
+        });
+      }
       $viewport.css("overflow-y", options.autoHeight ? "hidden" : "auto");
 
-      $canvas = $("<div class='grid-canvas' />").appendTo($viewport);
+      $canvas = $("<div class='grid-canvas' style='direction:ltr;' dir='ltr' />").appendTo($viewport);
 
       $focusSink2 = $focusSink.clone().appendTo($container);
 
@@ -424,29 +433,29 @@ if (typeof Slick === "undefined") {
       return options.fullWidthRows ? Math.max(rowWidth, availableWidth) : rowWidth;
     }
 
-function updateCanvasWidth(forceColumnWidthsUpdate) {
-  var oldCanvasWidth = canvasWidth;
-  canvasWidth = getCanvasWidth();
+    function updateCanvasWidth(forceColumnWidthsUpdate) {
+      var oldCanvasWidth = canvasWidth;
+      canvasWidth = getCanvasWidth();
 
-  if (canvasWidth !== oldCanvasWidth) {
-    $canvas.width(canvasWidth);
-    $headerRow.width(canvasWidth);
-    $headers.width(getHeadersWidth());
-    viewportHasHScroll = (canvasWidth > viewportW - scrollbarDimensions.width);
-  }
+      if (canvasWidth != oldCanvasWidth) {
+        $canvas.width(canvasWidth);
+        $headerRow.width(canvasWidth);
+        $headers.width(getHeadersWidth());
+        viewportHasHScroll = (canvasWidth > viewportW - scrollbarDimensions.width);
+      }
 
-  $headerRowSpacer.width(canvasWidth + (viewportHasVScroll ? scrollbarDimensions.width : 0));
+      $headerRowSpacer.width(canvasWidth + (viewportHasVScroll ? scrollbarDimensions.width : 0));
 
-  if (canvasWidth !== oldCanvasWidth || forceColumnWidthsUpdate) {
-    applyColumnWidths();
-  }
+      if (canvasWidth != oldCanvasWidth || forceColumnWidthsUpdate) {
+        applyColumnWidths();
+      }
 
-  // Update header's left style for RTL
-  if (isRtl) {
-    var leftOffset = 1315 - canvasWidth;
-    $headers.css("left", leftOffset + "px");
-  }
-}
+      // Update header's left style for RTL
+      if (isRtl) {
+        var leftOffset = 1315 - canvasWidth;
+        $headers.css("left", leftOffset + "px");
+      }
+    }
 
     function disableSelection($target) {
       if ($target && $target.jquery) {
@@ -1148,7 +1157,6 @@ function updateCanvasWidth(forceColumnWidthsUpdate) {
       var x = 0, w, rule;
       for (var i = 0; i < columns.length; i++) {
         w = columns[i].width;
-
         rule = getColumnCssRules(i);
         rule.left.style.left = x + "px";
         rule.right.style.right = (canvasWidth - x - w) + "px";
@@ -1993,6 +2001,7 @@ function updateCanvasWidth(forceColumnWidthsUpdate) {
 
     function handleHeaderRowScroll() {
       var scrollLeft = $headerRowScroller[0].scrollLeft;
+      if (isRtl) scrollLeft = -scrollLeft;
       if (scrollLeft != $viewport[0].scrollLeft) {
         $viewport[0].scrollLeft = scrollLeft;
       }
@@ -2006,9 +2015,15 @@ function updateCanvasWidth(forceColumnWidthsUpdate) {
 
       if (hScrollDist) {
         prevScrollLeft = scrollLeft;
+        if (isRtl) {
+          $headerScroller[0].scrollLeft = -scrollLeft;
+          $topPanelScroller[0].scrollLeft = -scrollLeft;
+          $headerRowScroller[0].scrollLeft = -scrollLeft;
+        } else {
         $headerScroller[0].scrollLeft = scrollLeft;
         $topPanelScroller[0].scrollLeft = scrollLeft;
         $headerRowScroller[0].scrollLeft = scrollLeft;
+        }
       }
 
       if (vScrollDist) {
