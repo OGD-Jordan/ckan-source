@@ -30,7 +30,8 @@ this.ckan.module('autocomplete', function (jQuery) {
       interval: 300,
       dropdownClass: '',
       containerClass: '',
-      minimumInputLength: 0
+      minimumInputLength: 0,
+      initialValueLabel: false, 
     },
 
     /* Sets up the module, binding methods, creating elements etc. Called
@@ -248,7 +249,8 @@ this.ckan.module('autocomplete', function (jQuery) {
       if (this.options.tags) {
         formatted = jQuery.map(value.split(","), this.formatTerm);
       } else {
-        formatted = this.formatTerm(value);
+        let term = this.options.initialValueLabel || value;
+        formatted = this.formatTerm(term);
       }
 
       // Select2 v3.0 supports a callback for async calls.

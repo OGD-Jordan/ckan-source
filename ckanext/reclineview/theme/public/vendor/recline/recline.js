@@ -1066,18 +1066,34 @@ this.recline.View = this.recline.View || {};
 //
 // NB: should *not* provide an el argument to the view but must let the view
 // generate the element itself (you can then append view.el to the DOM.
+
+let direction = document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr';
+
+let texts = {
+  'ltr': {
+    'Hey there!': 'Hey there!',
+    'no graph here yet': 'There\'s no graph here yet because we don\'t know what fields you\'d like to see plotted.',
+    'tell us': 'Please tell us by <strong>using the menu on the right</strong> and a graph will automatically appear.',
+  },
+  'rtl': {
+    'Hey there!': 'مرحبًا!',
+    'no graph here yet': 'لا يوجد رسم بياني هنا بعد لأننا لا نعرف الحقول التي ترغب في عرضها.',
+    'tell us': 'يرجى إخبارنا من خلال <strong>استخدام القائمة على اليمين</strong> وسيظهر الرسم البياني تلقائيًا.',
+  }
+}
+
 my.Flot = Backbone.View.extend({
-  template: ' \
+  template: ` \
     <div class="recline-flot"> \
       <div class="panel graph" style="display: block;"> \
         <div class="js-temp-notice alert alert-warning alert-block"> \
-          <h3 class="alert-heading">Hey there!</h3> \
-          <p>There\'s no graph here yet because we don\'t know what fields you\'d like to see plotted.</p> \
-          <p>Please tell us by <strong>using the menu on the right</strong> and a graph will automatically appear.</p> \
+          <h3 class="alert-heading">${texts[direction]['Hey there!']}</h3> \
+          <p>${texts[direction]['no graph here yet']}</p> \
+          <p>${texts[direction]['tell us']}</p> \
         </div> \
       </div> \
     </div> \
-',
+`,
 
   initialize: function(options) {
     var self = this;
@@ -1405,29 +1421,60 @@ my.Flot = Backbone.View.extend({
   }
 });
 
+texts = {
+  'ltr': {
+    'Graph Type': 'Graph Type',
+    'Lines and Points': 'Lines and Points',
+    'Lines': 'Lines',
+    'Points': 'Points',
+    'Bars': 'Bars',
+    'Columns': 'Columns',
+    'Axis 2': 'Axis 2',
+    'Remove': 'Remove',
+    'Add Series': 'Add Series',
+    'Please choose ...': 'Please choose ...',
+    'Group Column (Axis 1)': 'Group Column (Axis 1)',
+  },
+  'rtl': {
+    'Graph Type': 'نوع الرسم البياني',
+    'Lines and Points': 'خطوط ونقاط',
+    'Lines': 'خطوط',
+    'Points': 'نقاط',
+    'Bars': 'أشرطة',
+    'Columns': 'أعمدة',
+    'Axis 2': 'المحور 2',
+    'Remove': 'إزالة',
+    'Add Series': 'إضافة سلسلة',
+    'Please choose ...': 'يرجى الاختيار ...',
+    'Group Column (Axis 1)': 'تجميع العمود (المحور 1)',
+  }
+}
+
+
+
 my.FlotControls = Backbone.View.extend({
   className: "editor",
-  template: ' \
+  template: ` \
   <div class="editor"> \
     <form class="form-stacked"> \
       <div class="clearfix"> \
         <div class="form-group"> \
-          <label>Graph Type</label> \
+          <label>${texts[direction]['Graph Type']}</label> \
           <div class="input editor-type"> \
             <select class="form-control"> \
-              <option value="lines-and-points">Lines and Points</option> \
-              <option value="lines">Lines</option> \
-              <option value="points">Points</option> \
-              <option value="bars">Bars</option> \
-              <option value="columns">Columns</option> \
+              <option value="lines-and-points">${texts[direction]['Lines and Points']}</option> \
+              <option value="lines">${texts[direction]['Lines']}</option> \
+              <option value="points">${texts[direction]['Points']}</option> \
+              <option value="bars">${texts[direction]['Bars']}</option> \
+              <option value="columns">${texts[direction]['Columns']}</option> \
             </select> \
           </div> \
         </div> \
         <div class="form-group"> \
-          <label>Group Column (Axis 1)</label> \
+          <label>${texts[direction]['Group Column (Axis 1)']}</label> \
           <div class="input editor-group"> \
             <select class="form-control"> \
-              <option value="">Please choose ...</option> \
+              <option value="">${texts[direction]['Please choose ...']}</option> \
                 {{#fields}} \
               <option value="{{id}}">{{label}}</option> \
                 {{/fields}} \
@@ -1438,7 +1485,7 @@ my.FlotControls = Backbone.View.extend({
         </div> \
       </div> \
       <div class="editor-buttons"> \
-        <button class="btn btn-default editor-add">Add Series</button> \
+        <button class="btn btn-default editor-add">${texts[direction]['Add Series']}</button> \
       </div> \
       <div class="editor-buttons editor-submit" comment="hidden temporarily" style="display: none;"> \
         <button class="editor-save">Save</button> \
@@ -1446,12 +1493,12 @@ my.FlotControls = Backbone.View.extend({
       </div> \
     </form> \
   </div> \
-',
-  templateSeriesEditor: ' \
+`,
+  templateSeriesEditor: ` \
     <div class="editor-series js-series-{{seriesIndex}}"> \
       <div class="form-group"> \
-        <label>Series <span>{{seriesName}} (Axis 2)</span> \
-          [<a href="#remove" class="action-remove-series">Remove</a>] \
+        <label>Series <span>{{seriesName}} (${texts[direction]['Axis 2']})</span> \
+          [<a href="#remove" class="action-remove-series">${texts[direction]['Remove']}</a>] \
         </label> \
         <div class="input"> \
           <select class="form-control"> \
@@ -1462,7 +1509,7 @@ my.FlotControls = Backbone.View.extend({
         </div> \
       </div> \
     </div> \
-  ',
+  `,
   events: {
     'change form select': 'onEditorSubmit',
     'click .editor-add': '_onAddSeries',
@@ -2339,22 +2386,45 @@ my.Map = Backbone.View.extend({
   }
 });
 
+let direction = document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr';
+
+const texts = {
+  'ltr': {
+    'Latitude field': 'Latitude field',
+    'Longitude field': 'Longitude field',
+    'Latitude / Longitude fields': 'Latitude / Longitude fields',
+    'Geometry field (GeoJSON)': 'Geometry field (GeoJSON)',
+    'Update': 'Update',
+    'Auto zoom to features': 'Auto zoom to features',
+    'Cluster markers': 'Cluster markers',
+  },
+  'rtl': {
+    'Latitude field': 'حقل خط العرض',
+    'Longitude field': 'حقل خط الطول',
+    'Latitude / Longitude fields': 'حقول خط العرض / خط الطول',
+    'Geometry field (GeoJSON)': 'حقل الهندسة (GeoJSON)',
+    'Update': 'تحديث',
+    'Auto zoom to features': 'تكبير تلقائي إلى العناصر',
+    'Cluster markers': 'تجميع العلامات',
+  }
+}
+
 my.MapMenu = Backbone.View.extend({
   className: 'editor',
 
-  template: ' \
+  template: ` \
     <form class="form-stacked"> \
       <div class="clearfix"> \
         <div class="editor-field-type"> \
             <label class="radio"> \
               <input type="radio" id="editor-field-type-latlon" name="editor-field-type" value="latlon" checked="checked"/> \
-              Latitude / Longitude fields</label> \
+              ${texts[direction]['Latitude / Longitude fields']}</label> \
             <label class="radio"> \
               <input type="radio" id="editor-field-type-geom" name="editor-field-type" value="geom" /> \
-              GeoJSON field</label> \
+              ${texts[direction]['Geometry field (GeoJSON)']}</label> \
         </div> \
         <div class="editor-field-type-latlon"> \
-          <label>Latitude field</label> \
+          <label>${texts[direction]['Latitude field']}</label> \
           <div class="input editor-lat-field"> \
             <select class="form-control"> \
             <option value=""></option> \
@@ -2363,7 +2433,7 @@ my.MapMenu = Backbone.View.extend({
             {{/fields}} \
             </select> \
           </div> \
-          <label>Longitude field</label> \
+          <label>${texts[direction]['Longitude field']}</label> \
           <div class="input editor-lon-field"> \
             <select class="form-control"> \
             <option value=""></option> \
@@ -2374,7 +2444,7 @@ my.MapMenu = Backbone.View.extend({
           </div> \
         </div> \
         <div class="editor-field-type-geom" style="display:none"> \
-          <label>Geometry field (GeoJSON)</label> \
+          <label>${texts[direction]['Geometry field (GeoJSON)']}</label> \
           <div class="input editor-geom-field"> \
             <select class="form-control"> \
             <option value=""></option> \
@@ -2386,19 +2456,19 @@ my.MapMenu = Backbone.View.extend({
         </div> \
       </div> \
       <div class="editor-buttons"> \
-        <button class="btn btn-default editor-update-map">Update</button> \
+        <button class="btn btn-default editor-update-map">${texts[direction]['Update']}</button> \
       </div> \
       <div class="editor-options" > \
         <label class="checkbox"> \
           <input type="checkbox" id="editor-auto-zoom" value="autozoom" checked="checked" /> \
-          Auto zoom to features</label> \
+          ${texts[direction]['Auto zoom to features']}</label> \
         <label class="checkbox"> \
           <input type="checkbox" id="editor-cluster" value="cluster"/> \
-          Cluster markers</label> \
+          ${texts[direction]['Cluster markers']}</label> \
       </div> \
       <input type="hidden" class="editor-id" value="map-1" /> \
     </form> \
-  ',
+  `,
 
   // Define here events for UI elements
   events: {
@@ -2611,8 +2681,21 @@ this.recline.View = this.recline.View || {};
 // of views in use -- e.g. those specified by the views argument -- but instead
 // expect either that the default views are fine or that the client to have
 // initialized the MultiView with the relevant views themselves.
+let direction = document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr';
+const texts = {
+  'ltr': {
+    'records': 'records',
+    'about': 'about',
+  },
+  'rtl': {
+    'records': 'سجلات',
+    'about': 'حول',
+  }
+}
+
+
 my.MultiView = Backbone.View.extend({
-  template: ' \
+  template: ` \
   <div class="recline-data-explorer"> \
     <div class="alert-messages"></div> \
     \
@@ -2626,9 +2709,9 @@ my.MultiView = Backbone.View.extend({
       </div> \
       <div class="recline-results-info"> \
       {{#recordCountWasEstimated}} \
-        <span class="doc-count-approx">about</span> \
+        <span class="doc-count-approx">${texts[direction]['about']}</span> \
       {{/recordCountWasEstimated}} \
-      <span class="doc-count">{{recordCount}}</span> records \
+      <span class="doc-count">{{recordCount}}</span> ${texts[direction]['records']} \
       </div> \
       <div class="menu-right"> \
         <div class="btn-group" data-toggle="buttons-checkbox"> \
@@ -2642,7 +2725,7 @@ my.MultiView = Backbone.View.extend({
     <div class="data-view-sidebar"></div> \
     <div class="data-view-container"></div> \
   </div> \
-  ',
+  `,
   events: {
     'click .menu-right button': '_onMenuClick',
     'click .navigation button': '_onSwitchView'
@@ -4308,21 +4391,34 @@ this.recline.View = this.recline.View || {};
 (function($, my) {
   "use strict";
 
+let direction = document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr';
+const texts = {
+  'ltr': {
+    'Search data ...': 'Search data ...',
+    'Go': 'Go',
+  },
+  'rtl': {
+    'Search data ...': 'ابحث في البيانات ...',
+    'Go': 'اذهب',
+  }
+}
+
+
 my.QueryEditor = Backbone.View.extend({
   className: 'recline-query-editor',
-  template: ' \
+  template: ` \
     <form action="" method="GET" class="form-inline" role="form"> \
       <div class="form-group"> \
         <div class="input-group text-query"> \
           <div class="input-group-addon"> \
             <i class="fa fa-search"></i> \
           </div> \
-          <input class="form-control search-query" type="text" id="q" name="q" value="{{q}}" placeholder="Search data ..."> \
+          <input class="form-control search-query" type="text" id="q" name="q" value="{{q}}" placeholder="${texts[direction]['Search data ...']}"> \
         </div> \
       </div> \
-      <button type="submit" class="btn btn-default">Go &raquo;</button> \
+      <button type="submit" class="btn btn-default">${texts[direction]['Go']} &raquo;</button> \
     </form> \
-  ',
+  `,
 
   events: {
     'submit form': 'onFormSubmit'
@@ -4354,13 +4450,30 @@ this.recline.View = this.recline.View || {};
 
 (function($, my) {
   "use strict";
+let direction = document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr';
+
+const texts = {
+  'ltr': {
+    'Add filter': 'Add filter',
+    'Add': 'Add',
+    'Update': 'Update',
+    'Remove this filter': 'Remove this filter'
+  },
+  'rtl': {
+    'Add filter': 'إضافة فلتر',
+    'Add': 'إضافة',
+    'Update': 'تحديث',
+    'Remove this filter': 'إزالة هذا الفلتر'
+  }
+}
+
 
 my.ValueFilter = Backbone.View.extend({
   className: 'recline-filter-editor well',
-  template: ' \
+  template: ` \
     <div class="filters"> \
       <h3>Filters</h3> \
-      <button class="btn js-add-filter add-filter">Add filter</button> \
+      <button class="btn js-add-filter add-filter">${texts[direction]['Add filter']}</button> \
       <form class="form-stacked js-add" style="display: none;"> \
         <fieldset> \
           <label>Field</label> \
@@ -4369,7 +4482,7 @@ my.ValueFilter = Backbone.View.extend({
             <option value="{{id}}">{{label}}</option> \
             {{/fields}} \
           </select> \
-          <button type="submit" class="btn">Add</button> \
+          <button type="submit" class="btn">${texts[direction]['Add']}</button> \
         </fieldset> \
       </form> \
       <form class="form-stacked js-edit"> \
@@ -4377,21 +4490,21 @@ my.ValueFilter = Backbone.View.extend({
           {{{filterRender}}} \
         {{/filters}} \
         {{#filters.length}} \
-        <button type="submit" class="btn update-filter">Update</button> \
+        <button type="submit" class="btn update-filter">${texts[direction]['Update']}</button> \
         {{/filters.length}} \
       </form> \
     </div> \
-  ',
+  `,
   filterTemplates: {
-    term: ' \
+    term: ` \
       <div class="filter-{{type}} filter"> \
         <fieldset> \
           {{field}} \
-          <a class="js-remove-filter" href="#" title="Remove this filter" data-filter-id="{{id}}">&times;</a> \
+          <a class="js-remove-filter" href="#" title="${texts[direction]['Remove this filter']}" data-filter-id="{{id}}">&times;</a> \
           <input type="text" value="{{term}}" name="term" data-filter-field="{{field}}" data-filter-id="{{id}}" data-filter-type="{{type}}" /> \
         </fieldset> \
       </div> \
-    '
+    `
   },
   events: {
     'click .js-remove-filter': 'onRemoveFilter',
