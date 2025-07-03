@@ -2418,10 +2418,10 @@ my.MapMenu = Backbone.View.extend({
         <div class="editor-field-type"> \
             <label class="radio"> \
               <input type="radio" id="editor-field-type-latlon" name="editor-field-type" value="latlon" checked="checked"/> \
-              ${texts[direction]['Latitude / Longitude fields']}</label> \
+              <span class="checkbox-labels">${texts[direction]['Latitude / Longitude fields']}</span></label> \
             <label class="radio"> \
               <input type="radio" id="editor-field-type-geom" name="editor-field-type" value="geom" /> \
-              ${texts[direction]['Geometry field (GeoJSON)']}</label> \
+              <span class="checkbox-labels">${texts[direction]['Geometry field (GeoJSON)']}</span></label> \
         </div> \
         <div class="editor-field-type-latlon"> \
           <label>${texts[direction]['Latitude field']}</label> \
@@ -2461,10 +2461,12 @@ my.MapMenu = Backbone.View.extend({
       <div class="editor-options" > \
         <label class="checkbox"> \
           <input type="checkbox" id="editor-auto-zoom" value="autozoom" checked="checked" /> \
-          ${texts[direction]['Auto zoom to features']}</label> \
+          <span class="checkbox-labels">${texts[direction]['Auto zoom to features']}</span>
+          </label> \
         <label class="checkbox"> \
           <input type="checkbox" id="editor-cluster" value="cluster"/> \
-          ${texts[direction]['Cluster markers']}</label> \
+          <span class="checkbox-labels">${texts[direction]['Cluster markers']}</span>
+          </label> \
       </div> \
       <input type="hidden" class="editor-id" value="map-1" /> \
     </form> \
@@ -2686,10 +2688,13 @@ const texts = {
   'ltr': {
     'records': 'records',
     'about': 'about',
+    'Unknown': 'Unknown',
   },
   'rtl': {
     'records': 'سجلات',
     'about': 'حول',
+    'Unknown': 'غير معروف'
+
   }
 }
 
@@ -2807,7 +2812,7 @@ my.MultiView = Backbone.View.extend({
     });
     this.listenTo(this.model, 'query:done', function() {
       self.clearNotifications();
-      self.$el.find('.doc-count').text(self.model.recordCount || 'Unknown');
+      self.$el.find('.doc-count').text(self.model.recordCount || texts[direction]['Unknown']);
       self.$el.find('.doc-count-approx').text(self.model.recordCountWasEstimated && 'about' || '');
     });
     this.listenTo(this.model, 'query:fail', function(error) {

@@ -386,3 +386,9 @@ body {
   border-radius: 0px;
   border-top: none;
 }
+
+html[dir="rtl"]
+.checkbox-labels {
+  position: absolute;
+  right: 20px;
+}
