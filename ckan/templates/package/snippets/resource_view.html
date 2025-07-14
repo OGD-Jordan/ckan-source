@@ -65,27 +65,49 @@
       {% endif %}
     </div>
     <div id="embed-{{ resource_view['id'] }}" class="modal fade resource-view-embed">
-      <div class="modal-dialog">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h3 class="modal-title">{{ _("Embed resource view") }}</h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
-
-      </div>
-      <div class="modal-body">
-        <p class="embed-content">{{ _("You can copy and paste the embed code into a CMS or blog software that supports raw HTML") }}</p>
-        <div class="row">
-          <div class="col-md-6">
-            {{ form.input("width", label=_("Width"), value=700, classes=["control-full"]) }}
+      <div class="modal-dialog" style="max-width: 1300px !important;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">{{ _("Embed resource view") }}</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
           </div>
-          <div class="col-md-6">
-            {{ form.input("height", label=_("Height"), value=400, classes=["control-full"]) }}
+
+          <div class="modal-body">
+            <p class="embed-content">{{ _("You can copy and paste the embed code into a CMS or blog software that supports raw HTML") }}</p>
+            
+            <!-- Dropdown for predefined sizes -->
+            <div class="form-group mb-3">
+              <label for="predefined-size">{{ _("Predefined Dimensions") }}</label>
+              <select id="predefined-size" class="form-select">
+                <option value="700x400" selected>700 x 400</option>
+                <option value="400x300">400 x 300</option>
+                <option value="600x400">600 x 400</option>
+                <option value="800x600">800 x 600</option>
+                <option value="1200x800">1200 x 800</option>
+              </select>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                {{ form.input("width", label=_("Width"), value=700, classes=["control-full"]) }}
+              </div>
+              <div class="col-md-6">
+                {{ form.input("height", label=_("Height"), value=400, classes=["control-full"]) }}
+              </div>
+            </div>
+            {{ form.textarea("code", label=_("Code"), value="", classes=["pre"], rows=3) }}
+
+            <!-- Preview Section -->
+            <div class="mt-4">
+              <label>{{ _("Preview") }}</label>
+              <div id="embed-preview-container" class="border rounded" style="padding:5px; min-height: 50px;">
+                <!-- iframe will be injected here by JS -->
+              </div>
+            </div>
+
           </div>
+
         </div>
-        {{ form.textarea("code", label=_("Code"), value="", classes=["pre"], rows=3) }}
-      </div>
-      </div>
       </div>
     </div>
   </div>

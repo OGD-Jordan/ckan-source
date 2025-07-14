@@ -110,7 +110,6 @@ $(function () {
     var config = {
       initialCountry: countryCode ? undefined : "jo",
       separateDialCode: true,
-      i18n: countryTranslations,
     }
     if (isArabic) {
       config['i18n'] = countryTranslations

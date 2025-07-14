@@ -3687,16 +3687,35 @@ the specific language governing permissions and limitations under the Apache Lic
     };
 
     $.fn.select2.locales = [];
+    const lang = $("html").attr("lang") || "en";
+    const texts = {
+        'en': {
+            'No matches found': 'No matches found',
+            "Loading more results…": "Loading more results…",
+            "Loading failed": "Loading failed",
+            "One result is available, press enter to select it.": "One result is available, press enter to select it.",
+            " results are available, use up and down arrow keys to navigate.": " results are available, use up and down arrow keys to navigate.",
+            "Searching…": "Searching…",
+        },
+        'ar': {
+            'No matches found': 'لم يتم العثور على نتائج مطابقة',
+            "Loading more results…": "جاري تحميل المزيد من النتائج…",
+            "Loading failed": "فشل التحميل",
+            "One result is available, press enter to select it.": "نتيجة واحدة متاحة، اضغط Enter لاختيارها.",
+            " results are available, use up and down arrow keys to navigate.": " نتائج متاحة، استخدم مفاتيح الأسهم للتنقل.",
+            "Searching…": "جاري البحث…",
+        }
+    };
 
     $.fn.select2.locales['en'] = {
-         formatMatches: function (matches) { if (matches === 1) { return "One result is available, press enter to select it."; } return matches + " results are available, use up and down arrow keys to navigate."; },
-         formatNoMatches: function () { return "No matches found"; },
-         formatAjaxError: function (jqXHR, textStatus, errorThrown) { return "Loading failed"; },
+         formatMatches: function (matches) { if (matches === 1) { return texts[lang]["One result is available, press enter to select it."]; } return matches + texts[lang][" results are available, use up and down arrow keys to navigate."]; },
+         formatNoMatches: function () { return texts[lang]["No matches found"]; },
+         formatAjaxError: function (jqXHR, textStatus, errorThrown) { return texts[lang]["Loading failed"]; },
          formatInputTooShort: function (input, min) { var n = min - input.length; return "Please enter " + n + " or more character" + (n == 1 ? "" : "s"); },
          formatInputTooLong: function (input, max) { var n = input.length - max; return "Please delete " + n + " character" + (n == 1 ? "" : "s"); },
          formatSelectionTooBig: function (limit) { return "You can only select " + limit + " item" + (limit == 1 ? "" : "s"); },
-         formatLoadMore: function (pageNumber) { return "Loading more results…"; },
-         formatSearching: function () { return "Searching…"; }
+         formatLoadMore: function (pageNumber) { return texts[lang]["Loading more results…"]; },
+         formatSearching: function () { return texts[lang]["Searching…"]; }
     };
 
     $.extend($.fn.select2.defaults, $.fn.select2.locales['en']);

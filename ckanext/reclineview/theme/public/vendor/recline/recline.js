@@ -2694,7 +2694,6 @@ const texts = {
     'records': 'سجلات',
     'about': 'حول',
     'Unknown': 'غير معروف'
-
   }
 }
 
@@ -2737,6 +2736,19 @@ my.MultiView = Backbone.View.extend({
   },
 
   initialize: function(options) {
+    let direction = document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr';
+    const texts = {
+      'ltr': {
+        'about': 'about',
+        '0': '0',
+        0 : '0',
+      },
+      'rtl': {
+        'about': 'حول',
+        '0': '٠',
+        0 : '٠',
+      }
+    }
     var self = this;
     this._setupState(options.state);
 
@@ -2812,8 +2824,9 @@ my.MultiView = Backbone.View.extend({
     });
     this.listenTo(this.model, 'query:done', function() {
       self.clearNotifications();
-      self.$el.find('.doc-count').text(self.model.recordCount || texts[direction]['Unknown']);
-      self.$el.find('.doc-count-approx').text(self.model.recordCountWasEstimated && 'about' || '');
+      console.log("Records",self.model.recordCount)
+      self.$el.find('.doc-count').text(self.model.recordCount || texts[direction][0]);
+      self.$el.find('.doc-count-approx').text(self.model.recordCountWasEstimated && texts[direction]['about'] || '');
     });
     this.listenTo(this.model, 'query:fail', function(error) {
       self.clearNotifications();
@@ -4462,13 +4475,17 @@ const texts = {
     'Add filter': 'Add filter',
     'Add': 'Add',
     'Update': 'Update',
-    'Remove this filter': 'Remove this filter'
+    'Remove this filter': 'Remove this filter',
+    'Filters': 'Filters',
+    'Field': 'Field',
   },
   'rtl': {
     'Add filter': 'إضافة فلتر',
     'Add': 'إضافة',
     'Update': 'تحديث',
-    'Remove this filter': 'إزالة هذا الفلتر'
+    'Remove this filter': 'إزالة هذا الفلتر',
+    'Filters': 'الفلاتر',
+    'Field': 'الحقل',
   }
 }
 
@@ -4477,11 +4494,11 @@ my.ValueFilter = Backbone.View.extend({
   className: 'recline-filter-editor well',
   template: ` \
     <div class="filters"> \
-      <h3>Filters</h3> \
+      <h3>${texts[direction]['Filters']}</h3> \
       <button class="btn js-add-filter add-filter">${texts[direction]['Add filter']}</button> \
       <form class="form-stacked js-add" style="display: none;"> \
         <fieldset> \
-          <label>Field</label> \
+          <label>${texts[direction]['Field']}</label> \
           <select class="fields form-control"> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
