@@ -35,8 +35,10 @@ placeholder - placeholder text for url field
   <input type="radio" id="resource-url-none" name="url_type" value="" {{
     'checked' if not data.url and not data.url_type else '' }}>
   <div class="select-type">
-    <label id="resource-menu-label" class="form-label"
-      >{{ menu_label or _('Data') }}</label>
+    <label id="resource-menu-label" class="form-label">
+      <span title="{{ _('This field is required') }}" class="control-required">*</span>
+      {{ menu_label or _('Data') }}
+    </label>
     <div role="group" aria-labelledby="resource-menu-label">
       {% block url_type_select %}
         {% if is_upload_enabled %}
@@ -72,7 +74,10 @@ placeholder - placeholder text for url field
                   document.getElementById('field-clear-upload').checked = true;
                   document.getElementById('field-resource-upload').focus();
                 ">{{ _('Clear Upload') }}</button>
-              <label class="form-label">{{ upload_label or _('File') }}</label>
+              <label class="form-label">
+                <span title="{{ _('This field is required') }}" class="control-required">*</span>
+                {{ upload_label or _('File') }}
+              </label>
               <div class="controls">
                 {% set existing_name = data.get('url', '').split('/')[-1].split('?')[0].split('#')[0] %}
                 <input value="{{ existing_name }}" class="form-control" readonly>
@@ -87,7 +92,8 @@ placeholder - placeholder text for url field
               label=upload_label or _('File'),
               id='field-resource-upload',
               type='file',
-              classes=['control-full']) }}
+              classes=['control-full'],
+              is_required=true) }}
           </div>
         {% endblock %}
       </div>
@@ -107,7 +113,8 @@ placeholder - placeholder text for url field
           placeholder=placeholder,
           value=data.get('url'),
           error=errors.get('url'),
-          classes=['control-full']) }}
+          classes=['control-full'],
+          is_required=true) }}
       {% endblock %}
     </div>
   {% endblock %}

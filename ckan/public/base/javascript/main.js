@@ -120,7 +120,7 @@ $(function () {
     if (countryCode) {
       setTimeout(() => {
         const allCountries = window.intlTelInput.getCountryData();
-        const match = allCountries.find(c => "+" + c.dialCode === countryCode);
+        const match = allCountries.find(c => c.dialCode === countryCode || '+' + c.dialCode === countryCode);
         if (match) {
           iti.setCountry(match.iso2);
         }

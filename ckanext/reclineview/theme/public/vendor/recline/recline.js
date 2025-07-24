@@ -1434,6 +1434,7 @@ texts = {
     'Add Series': 'Add Series',
     'Please choose ...': 'Please choose ...',
     'Group Column (Axis 1)': 'Group Column (Axis 1)',
+    'Series': 'Series',
   },
   'rtl': {
     'Graph Type': 'نوع الرسم البياني',
@@ -1447,6 +1448,7 @@ texts = {
     'Add Series': 'إضافة سلسلة',
     'Please choose ...': 'يرجى الاختيار ...',
     'Group Column (Axis 1)': 'تجميع العمود (المحور 1)',
+    'Series': 'سلسلة',
   }
 }
 
@@ -1497,7 +1499,7 @@ my.FlotControls = Backbone.View.extend({
   templateSeriesEditor: ` \
     <div class="editor-series js-series-{{seriesIndex}}"> \
       <div class="form-group"> \
-        <label>Series <span>{{seriesName}} (${texts[direction]['Axis 2']})</span> \
+        <label>${texts[direction]['Series']} <span>{{seriesName}} (${texts[direction]['Axis 2']})</span> \
           [<a href="#remove" class="action-remove-series">${texts[direction]['Remove']}</a>] \
         </label> \
         <div class="input"> \
@@ -1591,6 +1593,7 @@ my.FlotControls = Backbone.View.extend({
 
     var htmls = Mustache.render(this.templateSeriesEditor, data);
     this.$el.find('.editor-series-group').append(htmls);
+    this.onEditorSubmit();
     return this;
   },
 
@@ -2740,13 +2743,9 @@ my.MultiView = Backbone.View.extend({
     const texts = {
       'ltr': {
         'about': 'about',
-        '0': '0',
-        0 : '0',
       },
       'rtl': {
         'about': 'حول',
-        '0': '٠',
-        0 : '٠',
       }
     }
     var self = this;
@@ -2825,7 +2824,7 @@ my.MultiView = Backbone.View.extend({
     this.listenTo(this.model, 'query:done', function() {
       self.clearNotifications();
       console.log("Records",self.model.recordCount)
-      self.$el.find('.doc-count').text(self.model.recordCount || texts[direction][0]);
+      self.$el.find('.doc-count').text(self.model.recordCount || '0');
       self.$el.find('.doc-count-approx').text(self.model.recordCountWasEstimated && texts[direction]['about'] || '');
     });
     this.listenTo(this.model, 'query:fail', function(error) {
