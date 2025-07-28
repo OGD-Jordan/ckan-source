@@ -2400,6 +2400,7 @@ const texts = {
     'Update': 'Update',
     'Auto zoom to features': 'Auto zoom to features',
     'Cluster markers': 'Cluster markers',
+    'Please Select': 'Please Select',
   },
   'rtl': {
     'Latitude field': 'حقل خط العرض',
@@ -2409,6 +2410,7 @@ const texts = {
     'Update': 'تحديث',
     'Auto zoom to features': 'تكبير تلقائي إلى العناصر',
     'Cluster markers': 'تجميع العلامات',
+    'Please Select': 'يرجى الاختيار',
   }
 }
 
@@ -2430,7 +2432,7 @@ my.MapMenu = Backbone.View.extend({
           <label>${texts[direction]['Latitude field']}</label> \
           <div class="input editor-lat-field"> \
             <select class="form-control"> \
-            <option value=""></option> \
+            <option value="">${texts[direction]['Please Select']}</option> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
             {{/fields}} \
@@ -2439,7 +2441,7 @@ my.MapMenu = Backbone.View.extend({
           <label>${texts[direction]['Longitude field']}</label> \
           <div class="input editor-lon-field"> \
             <select class="form-control"> \
-            <option value=""></option> \
+            <option value="">${texts[direction]['Please Select']}</option> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
             {{/fields}} \
@@ -2450,7 +2452,7 @@ my.MapMenu = Backbone.View.extend({
           <label>${texts[direction]['Geometry field (GeoJSON)']}</label> \
           <div class="input editor-geom-field"> \
             <select class="form-control"> \
-            <option value=""></option> \
+            <option value="">${texts[direction]['Please Select']}</option> \
             {{#fields}} \
             <option value="{{id}}">{{label}}</option> \
             {{/fields}} \
