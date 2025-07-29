@@ -36,8 +36,16 @@ this.ckan.module('resource-view-reorder', function($) {
 
     initialize: function() {
       jQuery.proxyAll(this, /_on/);
-
-      var labelText = this._('Reorder resource view');
+      const lang = $("html").attr("lang") || "en";
+      const texts = {
+          'en': {
+            'Reorder resource view': 'Reorder resource view',
+          },
+          'ar': {
+            'Reorder resource view': 'إعادة ترتيب عرض المورد',
+          }
+      };
+      var labelText = texts[lang]['Reorder resource view'];
       this.html_title = $(this.template.title)
         .text(labelText)
         .insertBefore(this.el)
