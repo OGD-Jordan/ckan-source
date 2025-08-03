@@ -19,7 +19,7 @@ Example:
 {% if s1 != 'uncomplete' %}{% set class = 'stage-1' %}{% endif %}
 {% if s2 != 'uncomplete' %}{% set class = 'stage-2' %}{% endif %}
 
-<ol class="stages {{ class }}">
+<ol class="stages {{ class }} d-flex">
   <li class="first {{ s1 }}">
     {% if s1 != 'complete' %}
       <span class="highlight">{{ h.humanize_entity_type('package', dataset_type, 'create label') or _('Create Dataset') }}</span>
