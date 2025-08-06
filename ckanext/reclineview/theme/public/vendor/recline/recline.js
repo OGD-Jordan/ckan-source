@@ -4411,13 +4411,15 @@ this.recline.View = this.recline.View || {};
   "use strict";
 
 let direction = document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr';
+let oppositeDirection = direction === 'ltr' ? 'rtl' : 'ltr';
+let styleToBeAdded = direction === 'rtl' ? 'direction: rtl; text-align: right;' : 'direction: ltr; text-align: left;';
 const texts = {
   'ltr': {
     'Search data ...': 'Search data ...',
     'Go': 'Go',
   },
   'rtl': {
-    'Search data ...': 'ابحث في البيانات ...',
+    'Search data ...': '... ابحث في البيانات ',
     'Go': 'اذهب',
   }
 }
@@ -4428,11 +4430,11 @@ my.QueryEditor = Backbone.View.extend({
   template: ` \
     <form action="" method="GET" class="form-inline" role="form"> \
       <div class="form-group"> \
-        <div class="input-group text-query"> \
+        <div class="input-group text-query" dir="${oppositeDirection}"> \
           <div class="input-group-addon"> \
             <i class="fa fa-search"></i> \
           </div> \
-          <input class="form-control search-query" type="text" id="q" name="q" value="{{q}}" placeholder="${texts[direction]['Search data ...']}"> \
+          <input class="form-control search-query" style="${styleToBeAdded}" type="text" id="q" name="q" value="{{q}}" placeholder="${texts[direction]['Search data ...']}"> \
         </div> \
       </div> \
       <button type="submit" class="btn btn-default">${texts[direction]['Go']} &raquo;</button> \
