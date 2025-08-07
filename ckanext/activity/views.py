@@ -133,7 +133,7 @@ def resource_history(id: str, resource_id: str, activity_id: str) -> str:
         )
         # the activity is not for the package in the URL - don't allow
         # misleading URLs as could be malicious
-        tk.abort(404, tk._("Activity not found"))
+        tk.abort(404, tk._("There are no changes to the dataset"))
     # The name is used lots in the template for links, so fix it to be
     # the current one. It's not displayed to the user anyway.
     package["name"] = current_pkg["name"]
@@ -244,7 +244,7 @@ def package_history(id: str, activity_id: str) -> Union[Response, str]:
             context, {"id": activity_id, "include_data": True}
         )
     except tk.ObjectNotFound:
-        tk.abort(404, tk._("Activity not found"))
+        tk.abort(404, tk._("There are no changes to the dataset"))
     except tk.NotAuthorized:
         tk.abort(403, tk._("Unauthorized to view activity data"))
     current_pkg = pkg_dict
@@ -268,7 +268,7 @@ def package_history(id: str, activity_id: str) -> Union[Response, str]:
         )
         # the activity is not for the package in the URL - don't allow
         # misleading URLs as could be malicious
-        tk.abort(404, tk._("Activity not found"))
+        tk.abort(404, tk._("There are no changes to the dataset"))
     # The name is used lots in the template for links, so fix it to be
     # the current one. It's not displayed to the user anyway.
     pkg_dict["name"] = current_pkg["name"]
@@ -390,8 +390,8 @@ def package_changes(id: str) -> Union[Response, str]:  # noqa
             {"id": activity_id, "object_type": "package", "diff_type": "html"},
         )
     except tk.ObjectNotFound as e:
-        log.info("Activity not found: {} - {}".format(str(e), activity_id))
-        return tk.abort(404, tk._("Activity not found"))
+        log.info("There are no changes to the dataset: {} - {}".format(str(e), activity_id))
+        return tk.abort(404, tk._("There are no changes to the dataset"))
     except tk.NotAuthorized:
         return tk.abort(403, tk._("Unauthorized to view activity data"))
 
@@ -468,8 +468,8 @@ def package_changes_multiple() -> Union[Response, str]:  # noqa
                 },
             )
         except tk.ObjectNotFound as e:
-            log.info("Activity not found: {} - {}".format(str(e), current_id))
-            return tk.abort(404, tk._("Activity not found"))
+            log.info("There are no changes to the dataset: {} - {}".format(str(e), current_id))
+            return tk.abort(404, tk._("There are no changes to the dataset"))
         except tk.NotAuthorized:
             return tk.abort(403, tk._("Unauthorized to view activity data"))
 
@@ -617,8 +617,8 @@ def group_changes(id: str, group_type: str, is_organization: bool) -> str:
             {"id": activity_id, "object_type": group_type, "diff_type": "html"},
         )
     except tk.ObjectNotFound as e:
-        log.info("Activity not found: {} - {}".format(str(e), activity_id))
-        return tk.abort(404, tk._("Activity not found"))
+        log.info("There are no changes to the dataset: {} - {}".format(str(e), activity_id))
+        return tk.abort(404, tk._("There are no changes to the dataset"))
     except tk.NotAuthorized:
         return tk.abort(403, tk._("Unauthorized to view activity data"))
 
@@ -713,8 +713,8 @@ def group_changes_multiple(is_organization: bool, group_type: str) -> str:
                 },
             )
         except tk.ObjectNotFound as e:
-            log.info("Activity not found: {} - {}".format(str(e), current_id))
-            return tk.abort(404, tk._("Activity not found"))
+            log.info("There are no changes to the dataset: {} - {}".format(str(e), current_id))
+            return tk.abort(404, tk._("There are no changes to the dataset"))
         except tk.NotAuthorized:
             return tk.abort(403, tk._("Unauthorized to view activity data"))
 
