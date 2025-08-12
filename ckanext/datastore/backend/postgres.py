@@ -382,6 +382,22 @@ def _where_clauses(
         # connection.execute, otherwise it will think the "%" is for
         # substituting a bind parameter
         field = field.replace('%', '%%')
+        if field == '_id':
+            column = 'CAST("_id" AS text)'
+            if isinstance(value, list):
+                value = [str(v) for v in value]
+                clause_str = (
+                    u'{0} in ({1})'.format(
+                        column,
+                        ','.join(['%s'] * len(value))
+                    )
+                )
+                clause = (clause_str,) + tuple(value)
+            else:
+                clause = (u'{0} = %s'.format(column), str(value))
+            clauses.append(clause)
+            continue
+
         if isinstance(value, list) and not field_array_type:
             clause_str = (u'"{0}" in ({1})'.format(field,
                           ','.join(['%s'] * len(value))))

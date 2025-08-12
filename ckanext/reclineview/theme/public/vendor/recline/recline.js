@@ -2705,7 +2705,7 @@ const texts = {
 
 my.MultiView = Backbone.View.extend({
   template: ` \
-  <div class="recline-data-explorer"> \
+  <div class="recline-data-explorer" style="margin-top: 1rem;"> \
     <div class="alert-messages"></div> \
     \
     <div class="header clearfix"> \
