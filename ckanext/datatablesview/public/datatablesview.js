@@ -851,6 +851,29 @@ this.ckan.module('datatables_view', function (jQuery) {
       // called after getting an AJAX response from CKAN
       datatable.on('xhr', function (e, settings, json, xhr) {
         gelapsedTime = window.performance.now() - gstartTime
+
+        if (gcurrentView === 'table') {
+          const records = typeof json.recordsFiltered !== 'undefined'
+            ? json.recordsFiltered
+            : (json.data ? json.data.length : 0)
+          const tableEl = $('#dtprv')
+          const messageEl = $('#dtprv_no_results')
+          if (records === 0) {
+            tableEl.find('thead, tbody').hide()
+            if (!messageEl.length) {
+              $('<div id="dtprv_no_results" class="dtprv-no-results">' + that._('No results') + '</div>')
+                .insertAfter(tableEl)
+            }
+          } else {
+            tableEl.find('thead, tbody').show()
+            if (messageEl.length) {
+              messageEl.remove()
+            }
+          }
+        } else {
+          $('#dtprv thead, #dtprv tbody').show()
+          $('#dtprv_no_results').remove()
+        }
       })
 
       // save state of table when row selection is changed

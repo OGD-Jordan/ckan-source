@@ -19,12 +19,23 @@ my.RecordCount = Backbone.View.extend({
   },
 
   render: function() {
+    let direction = document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr';
+    const texts = {
+      'ltr': {
+        'records': 'records',
+        'record': 'record',
+      },
+      'rtl': {
+        'records': 'سجلات',
+        'record': 'سجل',
+      }
+    }
     var tmplData = this.model.toTemplateJSON();
-    tmplData.recordCount = tmplData.recordCount || 'Unknown number of';
+    tmplData.recordCount = tmplData.recordCount || '0';
 	if (tmplData.recordCount==1) {
-      tmplData.record = 'record';
+      tmplData.record = texts[direction]['record'];
     } else {
-      tmplData.record = 'records';
+      tmplData.record = texts[direction]['records'];
     }
     var templated = Mustache.render(this.template, tmplData);
     this.$el.html(templated);

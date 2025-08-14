@@ -96,6 +96,7 @@ this.ckan.module('recline_view', function (jQuery) {
       var view,
           state,
           controls = [];
+          self = this;
 
       if(reclineView.view_type === "recline_graph_view") {
         state = {
@@ -147,6 +148,44 @@ this.ckan.module('recline_view', function (jQuery) {
       if(reclineView.view_type === "recline_graph_view") {
         view.redraw();
       }
+
+      dataset.bind('query:done', function () {
+        self._updateNoResults(dataset);
+      });
+      self._updateNoResults(dataset);
+    },
+    _updateNoResults: function (dataset) {
+      let direction = document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr';
+  
+      let texts = {
+        'ltr': {
+          'No results found': 'No results found',
+        },
+        'rtl': {
+          'No results found': 'لم يتم العثور على نتائج',
+        }
+      }
+      var grid = jQuery(this.el).find('.recline-slickgrid');
+      if (!grid.length) {
+        return;
+      }
+      var header = grid.find('.slick-header');
+      var canvas = grid.find('.grid-canvas');
+      var msg = grid.find('p.no-results');
+      if (dataset.recordCount === 0) {
+        header.hide();
+        canvas.hide();
+        if (!msg.length) {
+          grid.prepend(`<p class="no-results" style="margin-top: 2rem; font-size: 2rem;text-align: center;">${texts[direction]['No results found']}</p>`);
+        }
+      } else {
+        header.show();
+        canvas.show();
+        if (msg.length) {
+          msg.remove();
+        }
+      }
+
     },
 
     _reclineMapViewOptions: function(dataset, map_config) {

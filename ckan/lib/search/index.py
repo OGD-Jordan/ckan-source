@@ -195,8 +195,8 @@ class PackageSearchIndex(SearchIndex):
         if not tracking_summary:
             tracking_summary = model.TrackingSummary.get_for_package(
                 pkg_dict['id'])
-        pkg_dict['views_total'] = tracking_summary['total']
-        pkg_dict['views_recent'] = tracking_summary['recent']
+        pkg_dict['views_total'] = int(tracking_summary['total'])
+        pkg_dict['views_recent'] = int(tracking_summary['recent'])
 
         resource_fields = [('name', 'res_name'),
                            ('description', 'res_description'),
