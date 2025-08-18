@@ -4419,7 +4419,7 @@ const texts = {
     'Go': 'Go',
   },
   'rtl': {
-    'Search data ...': '... ابحث في البيانات ',
+    'Search data ...': ' ابحث في البيانات ...',
     'Go': 'اذهب',
   }
 }
@@ -4434,7 +4434,7 @@ my.QueryEditor = Backbone.View.extend({
           <div class="input-group-addon"> \
             <i class="fa fa-search"></i> \
           </div> \
-          <input class="form-control search-query" style="${styleToBeAdded}" type="text" id="q" name="q" value="{{q}}" placeholder="${texts[direction]['Search data ...']}"> \
+          <input class="form-control search-query" dir="${direction}" style="${styleToBeAdded}" type="text" id="q" name="q" value="{{q}}" placeholder="${texts[direction]['Search data ...']}"> \
         </div> \
       </div> \
       <button type="submit" class="btn btn-default">${texts[direction]['Go']} &raquo;</button> \

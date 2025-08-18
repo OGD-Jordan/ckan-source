@@ -392,3 +392,17 @@ html[dir="rtl"]
   position: absolute;
   right: 20px;
 }
+
+.input-group[dir="rtl"] .search-query {
+  border-radius: 4px !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-right: 0 !important;
+}
+
+.input-group[dir="rtl"] .input-group-addon {
+  border-radius: 4px !important;
+  border: 1px solid #ccc !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
