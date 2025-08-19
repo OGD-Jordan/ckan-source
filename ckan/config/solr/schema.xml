@@ -96,6 +96,17 @@ attribute with the form `ckan-X.Y` -->
       </analyzer>
     </fieldType>
 
+    <fieldType name="text_edge_ngram" class="solr.TextField" positionIncrementGap="100">
+      <analyzer type="index">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.EdgeNGramFilterFactory" minGramSize="1" maxGramSize="20"/>
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+      </analyzer>
+    </fieldType>
 </types>
 
 
@@ -103,7 +114,7 @@ attribute with the form `ckan-X.Y` -->
     <field name="index_id" type="string" indexed="true" stored="true" required="true" />
     <field name="id" type="string" indexed="true" stored="true" required="true" />
     <field name="site_id" type="string" indexed="true" stored="true" required="true" />
-    <field name="title" type="text" indexed="true" stored="true" />
+    <field name="title" type="text_edge_ngram" indexed="true" stored="true" />
     <field name="title_ngram" type="text_ngram" indexed="true" stored="true" />
     <field name="entity_type" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="dataset_type" type="string" indexed="true" stored="true" />
@@ -115,7 +126,7 @@ attribute with the form `ckan-X.Y` -->
     <field name="url" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="ckan_url" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="download_url" type="string" indexed="true" stored="true" omitNorms="true" />
-    <field name="notes" type="text" indexed="true" stored="true"/>
+    <field name="notes" type="text_edge_ngram" indexed="true" stored="true"/>
     <field name="author" type="text_general" indexed="true" stored="true" />
     <field name="author_email" type="text_general" indexed="true" stored="true" />
     <field name="maintainer" type="text_general" indexed="true" stored="true" />
@@ -137,7 +148,7 @@ attribute with the form `ckan-X.Y` -->
 
     <!-- catchall field, containing all other searchable text fields (implemented
          via copyField further on in this schema  -->
-    <field name="text" type="text" indexed="true" stored="false" multiValued="true"/>
+    <field name="text" type="text_edge_ngram" indexed="true" stored="false" multiValued="true"/>
     <field name="urls" type="text" indexed="true" stored="false" multiValued="true"/>
 
     <field name="depends_on" type="text" indexed="true" stored="false" multiValued="true"/>

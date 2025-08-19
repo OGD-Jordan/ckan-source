@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block bodytag %} style="overflow-y:hidden;" data-site-root="{{ h.url_for('home.index', locale='default', qualified=true) }}" data-locale-root="{{ h.url_for('home.index', qualified=true) }}" {% endblock %}
+
 {% block page %}
 
   {% set map_config = h.get_map_config() %}
