@@ -14,7 +14,7 @@ from ckan import logic, model, plugins
 import ckan.authz
 from ckan.types import Context, DataDict, Schema
 from . import signals
-from .navl.dictization_functions import validate
+import ckan.lib.navl.dictization_functions as df
 if TYPE_CHECKING:
     from ckan.config.middleware.flask_app import CKANFlask
 
@@ -328,7 +328,7 @@ def plugin_validate(
         if result is not None:
             return result
 
-    return validate(data_dict, schema, context)
+    return df.validate(data_dict, schema, context)
 
 
 def get_permission_labels() -> Any:
