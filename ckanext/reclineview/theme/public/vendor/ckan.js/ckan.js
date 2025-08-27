@@ -46,7 +46,7 @@ if (isNodeModule) {
   //
   // Primarily for use by Recline backend below
   my.Client.prototype.datastoreQuery = function(queryObj, cb) {
-    var actualQuery = my._normalizeQuery(queryObj);
+    var actualQuery = {...my._normalizeQuery(queryObj), wildcard: true};
     this.action('datastore_search', actualQuery, function(err, results) {
       // map ckan types to our usual types ...
       var fields = _.map(results.result.fields, function(field) {

@@ -175,6 +175,7 @@ def datastore_search_schema() -> Schema:
         'id': [ignore_missing],
         'q': [ignore_missing, unicode_or_json_validator],
         'plain': [ignore_missing, boolean_validator],
+        'wildcard': [ignore_missing, boolean_validator],
         'filters': [ignore_missing, json_validator],
         'language': [ignore_missing, unicode_safe],
         'limit': [

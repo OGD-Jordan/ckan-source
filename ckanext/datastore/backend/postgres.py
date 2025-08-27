@@ -476,11 +476,13 @@ def _update_where_clauses_on_q_dict(
 
 def _textsearch_query(
         lang: str, q: Optional[Union[str, dict[str, str], Any]], plain: bool,
-        full_text: Optional[str]) -> tuple[str, dict[str, str]]:
+        full_text: Optional[str], wildcard: bool = False) -> tuple[str, dict[str, str]]:
     u'''
     :param lang: language for to_tsvector
     :param q: string to search _full_text or dict to search columns
     :param plain: True to use plainto_tsquery, False for to_tsquery
+    :param wildcard: when True and plain, perform prefix matching on each
+        query token using to_tsquery
     :param full_text: string to search _full_text
 
     return (query, rank_columns) based on passed text/dict query
@@ -495,29 +497,29 @@ def _textsearch_query(
     if q and not full_text:
         if isinstance(q, str):
             query, rank = _build_query_and_rank_statements(
-                lang, q, plain)
+                lang, q, plain, wildcard=wildcard)
             statements.append(query)
             rank_columns[u'rank'] = rank
         elif isinstance(q, dict):
             for field, value in q.items():
                 query, rank = _build_query_and_rank_statements(
-                    lang, value, plain, field)
+                    lang, value, plain, field, wildcard)
                 statements.append(query)
                 rank_columns[u'rank ' + field] = rank
     elif full_text and not q:
         _update_rank_statements_and_columns(
-            statements, rank_columns, lang, full_text, plain
+            statements, rank_columns, lang, full_text, plain, wildcard
         )
     elif full_text and isinstance(q, dict):
         _update_rank_statements_and_columns(
-            statements, rank_columns, lang, full_text, plain)
+            statements, rank_columns, lang, full_text, plain, wildcard)
         for field, value in q.items():
             _update_rank_statements_and_columns(
-                statements, rank_columns, lang, value, plain, field
+                statements, rank_columns, lang, value, plain, wildcard, field
             )
     elif full_text and isinstance(q, str):
         _update_rank_statements_and_columns(
-            statements, rank_columns, lang, full_text, plain
+            statements, rank_columns, lang, full_text, plain, wildcard
         )
 
     statements_str = ', ' + ', '.join(statements)
@@ -526,9 +528,9 @@ def _textsearch_query(
 
 def _update_rank_statements_and_columns(
         statements: list[str], rank_columns: dict[str, str], lang: str,
-        query: str, plain: bool, field: Optional[str] = None):
+        query: str, plain: bool, wildcard: bool, field: Optional[str] = None):
     query, rank = _build_query_and_rank_statements(
-        lang, query, plain, field)
+        lang, query, plain, field, wildcard)
     statements.append(query)
     if field:
         rank_columns[u'rank ' + field] = rank
@@ -537,13 +539,21 @@ def _update_rank_statements_and_columns(
 
 
 def _build_query_and_rank_statements(
-        lang: str, query: str, plain: bool, field: Optional[str] = None):
+        lang: str, query: str, plain: bool, field: Optional[str] = None,
+        wildcard: bool = False):
     query_alias = _ts_query_alias(field)
     lang_literal = literal_string(lang)
-    query_literal = literal_string(query)
     if plain:
         statement = u"plainto_tsquery({lang_literal}, {literal}) {alias}"
+        if wildcard:
+            tokens = [t + ':*' for t in query.split()]
+            query_literal = literal_string(' & '.join(tokens))
+            statement = u"to_tsquery({lang_literal}, {literal}) {alias}"
+        else:
+            query_literal = literal_string(query)
+            statement = u"plainto_tsquery({lang_literal}, {literal}) {alias}"
     else:
+        query_literal = literal_string(query)
         statement = u"to_tsquery({lang_literal}, {literal}) {alias}"
     statement = statement.format(
         lang_literal=lang_literal,
@@ -1918,7 +1928,8 @@ class DatastorePostgresqlBackend(DatastoreBackend):
             _fts_lang(data_dict.get('language')),
             data_dict.get('q'),
             data_dict.get('plain', True),
-            data_dict.get('full_text'))
+            data_dict.get('full_text'),
+            data_dict.get('wildcard', False))
         # mutate parameter to add rank columns for _result_fields
         for rank_alias in rank_columns:
             fields_types[rank_alias] = u'float'
