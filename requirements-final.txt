@@ -79,3 +79,6 @@ zipp==3.7.0
 zope.interface==5.4.0
 text-unidecode==1.3
 Unidecode==1.0.22
+goodtables==1.5.1
+phonenumbers==9.0.6
+ldap3==2.9.1

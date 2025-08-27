@@ -131,7 +131,7 @@ def purge():
 
     result = logic.get_action('datastore_search')(
         {'user': site_user['name']},
-        {'resource_id': '_table_metadata'}
+        {'resource_id': '_table_metadata', 'limit': 1000}
     )
 
     resource_id_list = []

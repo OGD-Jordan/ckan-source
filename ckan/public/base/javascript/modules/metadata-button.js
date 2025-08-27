@@ -6,7 +6,7 @@
  *
  */
 
-ckan.module('metadata-button', function(jQuery) {
+this.ckan.module('metadata-button', function(jQuery) {
   return {
     options: {
       target: 'button'
@@ -17,22 +17,32 @@ ckan.module('metadata-button', function(jQuery) {
       this.el.on('click', jQuery.proxy(this._onClick, this));
     },
 
+    
+
     _onClick: function(event) {
-      console.log("PRESSED THE BUTTON");
+      let direction = document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr';
+
+      let texts = {
+        'ltr': {
+          'Show metadata diff': 'Show metadata diff',
+          'Hide metadata diff': 'Hide metadata diff'
+        },
+        'rtl': {
+          'Show metadata diff': 'إظهار اختلاف البيانات الوصفية',
+          'Hide metadata diff': 'إخفاء اختلاف البيانات الوصفية'
+        }
+      };
       var div = document.getElementById("metadata_diff");
-      if (div.style.display === "none") {
-        div.style.display = "block";
-      }
-      else {
-        div.style.display = "none";
-      }
+      div.style.display = (div.style.display === "none") ? "block" : "none";
+
       var btn = document.getElementById("metadata_button");
-      if (btn.value === "Show metadata diff") {
-        btn.value = "Hide metadata diff";
+
+      if (btn.value === texts[direction]['Show metadata diff']) {
+        btn.value = texts[direction]['Hide metadata diff'];
+      } else {
+        btn.value = texts[direction]['Show metadata diff'];
       }
-      else {
-        btn.value = "Show metadata diff";
-      }
-    }
+
+    }   
   }
 });

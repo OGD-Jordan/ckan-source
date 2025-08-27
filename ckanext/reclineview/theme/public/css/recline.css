@@ -11,6 +11,7 @@ body {
   float: left;
   margin-left: 10px;
   line-height: 26px;
+  margin-right: auto;
 }
 
 .loading-dialog {
@@ -110,9 +111,6 @@ body {
 .recline-query-editor {
   float: right;
   height: 35px;
-  padding-right: 5px;
-  margin-right: 5px;
-  border-right: solid 2px #ddd;
 }
 
 .header .input-prepend {
@@ -150,7 +148,7 @@ body {
 
 .recline-pager {
   float: left;
-  margin: auto;
+  /* margin: auto; */
   display: block;
   margin-left: 20px;
   direction: ltr !important;
@@ -405,4 +403,10 @@ html[dir="rtl"]
   border: 1px solid #ccc !important;
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
+}
+
+
+.d-flex-align-items-center {
+  display: flex;
+  align-items: center;
 }

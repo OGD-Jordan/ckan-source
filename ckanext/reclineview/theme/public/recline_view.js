@@ -138,7 +138,7 @@ this.ckan.module('recline_view', function (jQuery) {
       // need to bother with it.
       if(reclineView.view_type !== 'recline_view') {
         var newElements = jQuery('<div />');
-        this._renderControls(newElements, controls, this.options.controlsClassName);
+        this._renderControls(newElements, controls, this.options.controlsClassName + ' d-flex-align-items-center');
         newElements.append(view.el);
         jQuery(this.el).html(newElements);
         view.visible = true;
