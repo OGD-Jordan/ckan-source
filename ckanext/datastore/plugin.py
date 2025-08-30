@@ -197,6 +197,11 @@ class DatastorePlugin(p.SingletonPlugin):
             if isinstance(plain, bool):
                 del data_dict['plain']
 
+        wildcard = data_dict.get('wildcard')
+        if wildcard:
+            if isinstance(wildcard, bool):
+                del data_dict['wildcard']
+
         distinct = data_dict.get('distinct')
         if distinct:
             if isinstance(distinct, bool):
