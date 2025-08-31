@@ -62,14 +62,32 @@ this.ckan.module('resource-view-embed', function ($) {
 
   function _renderPreviewIframe() {
     previewContainer.html(_embedCode());
+    setTimeout(_updatePreviewIframeDimensions, 1000);
   }
 
   function _updatePreviewIframeDimensions() {
-    const iframe = $('iframe', previewContainer);
-    if (iframe.length) {
-      iframe.attr('width', self.options.width);
-      iframe.attr('height', self.options.height);
-    }
+    let iframe = $('iframe', previewContainer);
+    if (!(iframe.length)) return; 
+
+    iframe.attr('width', self.options.width);
+    iframe.attr('height', self.options.height);
+
+    const iframeDoc = iframe.contents();
+
+    const iframe_image_check = $('img', iframeDoc);
+    if (iframe_image_check.length === 0) return; // not an image resource view
+
+    const elements = [
+      $('html', iframeDoc),
+      $('body', iframeDoc),
+      iframe_image_check
+    ]
+    elements.forEach(el => {
+      if (el.length) {
+        el[0].style.setProperty('width', '100%', 'important')
+        el[0].style.setProperty('height', '100%', 'important')
+      }
+    });
   }
 
   return {
