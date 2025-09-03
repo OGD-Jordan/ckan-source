@@ -239,20 +239,19 @@ if (typeof Slick === "undefined") {
       $headerScroller = $("<div class='slick-header ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
       var headersLeftStyle;
       
-      var isRtl = $('html').css('direction') === "rtl";
-      headersLeftStyle = isRtl ? "left:0px; right:0px;" : "left:-1000px";
-      $container.css("direction", isRtl ? "rtl" : "ltr");
+      headersLeftStyle = "left:-1000px";
+      $container.css("direction", "ltr");
 
 
-      $headers = $("<div dir='ltr' class='slick-header-columns' style='" + headersLeftStyle + "' />").appendTo($headerScroller);
+      $headers = $("<div dir='ltr' class='slick-header-columns' style='left:-1000px !important;' />").appendTo($headerScroller);
       $headers.width(getHeadersWidth());
       var viewportWidth = $('.slick-viewport').width();
 
       $headers.css({
-        'left': 'auto',
-        'right': canvasWidth - viewportWidth + 'px', // mimic left scroll offset
+        'left': -1000 + canvasWidth - viewportWidth + 'px !important',
+      'direction': 'ltr !important',
+      'right': 'auto !important',
       })
-      // css("direction", "ltr");
       
       $headerRowScroller = $("<div class='slick-headerrow ui-state-default' style='overflow:hidden;position:relative;' />").appendTo($container);
       $headerRowScroller.css("direction", "ltr");
@@ -277,15 +276,6 @@ if (typeof Slick === "undefined") {
       }
 
       $viewport = $("<div class='slick-viewport' style='width:100%;overflow:auto;outline:0;position:relative;;'>").appendTo($container);
-      if (isRtl) {
-        $viewport.on('scroll', function () {
-          const scrollRight = $(this).scrollLeft();
-          $('.slick-header-columns').css({
-            'right': scrollRight + 'px',
-            'left': 'auto',
-          });
-        });
-      }
       $viewport.css("overflow-y", options.autoHeight ? "hidden" : "auto");
 
       $canvas = $("<div class='grid-canvas' style='direction:ltr;' dir='ltr' />").appendTo($viewport);
@@ -450,11 +440,6 @@ if (typeof Slick === "undefined") {
         applyColumnWidths();
       }
 
-      // Update header's left style for RTL
-      if (isRtl) {
-        var leftOffset = 1315 - canvasWidth;
-        $headers.css("left", leftOffset + "px");
-      }
     }
 
     function disableSelection($target) {
@@ -2001,7 +1986,6 @@ if (typeof Slick === "undefined") {
 
     function handleHeaderRowScroll() {
       var scrollLeft = $headerRowScroller[0].scrollLeft;
-      if (isRtl) scrollLeft = -scrollLeft;
       if (scrollLeft != $viewport[0].scrollLeft) {
         $viewport[0].scrollLeft = scrollLeft;
       }
@@ -2015,15 +1999,9 @@ if (typeof Slick === "undefined") {
 
       if (hScrollDist) {
         prevScrollLeft = scrollLeft;
-        if (isRtl) {
-          $headerScroller[0].scrollLeft = -scrollLeft;
-          $topPanelScroller[0].scrollLeft = -scrollLeft;
-          $headerRowScroller[0].scrollLeft = -scrollLeft;
-        } else {
         $headerScroller[0].scrollLeft = scrollLeft;
         $topPanelScroller[0].scrollLeft = scrollLeft;
         $headerRowScroller[0].scrollLeft = scrollLeft;
-        }
       }
 
       if (vScrollDist) {
