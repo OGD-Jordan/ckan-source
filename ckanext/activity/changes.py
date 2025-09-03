@@ -393,6 +393,7 @@ def check_resource_changes(
                         }
                     )
 
+from ckan.lib.helpers import helper_functions as h
 
 def check_metadata_changes(
     change_list: ChangeList, old: Data, new: Data
@@ -404,6 +405,7 @@ def check_metadata_changes(
     # if the title has changed
     if old.get("title") != new.get("title"):
         _title_change(change_list, old, new)
+    new['title'] = h.get_package_display_name(new)
 
     # if the owner organization changed
     if old.get("owner_org") != new.get("owner_org"):
@@ -448,6 +450,7 @@ def check_metadata_changes(
         _tag_change(change_list, new_tags, old_tags, new)
 
     # if the license has changed
+    new['license_title'] = h.get_package_license_title(new)
     if old.get("license_title") != new.get("license_title"):
         _license_change(change_list, old, new)
 
