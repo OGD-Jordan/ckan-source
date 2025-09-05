@@ -32,6 +32,7 @@ this.ckan.module('autocomplete', function (jQuery) {
       containerClass: '',
       minimumInputLength: 0,
       initialValueLabel: false, 
+      createSearchChoiceDisable: false
     },
 
     /* Sets up the module, binding methods, creating elements etc. Called
@@ -75,6 +76,12 @@ this.ckan.module('autocomplete', function (jQuery) {
         } else {
           settings.query = this._onQuery;
           settings.createSearchChoice = this.formatTerm;
+        }
+
+        if (this.options.createSearchChoiceDisable) {
+          settings.createSearchChoice = function(params) {
+              return undefined;
+          }
         }
         settings.initSelection = this.formatInitialValue;
       }
@@ -249,7 +256,7 @@ this.ckan.module('autocomplete', function (jQuery) {
       if (this.options.tags) {
         formatted = jQuery.map(value.split(","), this.formatTerm);
       } else {
-        let term = this.options.initialValueLabel || value;
+        let term = typeof this.options.initialValueLabel === 'string' ? this.options.initialValueLabel || value: value;
         formatted = this.formatTerm(term);
       }
 
