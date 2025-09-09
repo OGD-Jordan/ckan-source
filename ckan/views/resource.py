@@ -485,6 +485,15 @@ class DeleteView(MethodView):
             )
         except NotFound:
             return base.abort(404, _(u'Resource not found'))
+        except ValidationError as e:
+            if e.error_dict.get('Delete'):
+                h.flash_error(_('Not all resources can be deleted from a dataset. A dataset must at least contain one resource.'))
+                return h.redirect_to(
+                    u'{}_resource.edit'.format(package_type),
+                    id=id,
+                    package_type=package_type,
+                    resource_id=resource_id
+                ) 
 
     def get(self, package_type: str, id: str, resource_id: str) -> str:
         context = self._prepare(id)
