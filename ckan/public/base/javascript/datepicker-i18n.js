@@ -55,7 +55,7 @@
 
 $(document).ready(function () {
   // Initialize all date inputs
-  $("input[type=date]").each(function () {
+  $("input[type=date1]").each(function () {
     $(this).datepicker({
       dateFormat: 'yy-mm-dd',
       altField: this,
@@ -66,6 +66,6 @@ $(document).ready(function () {
 
   // Apply localization based on HTML lang attribute
   const lang = $("html").attr("lang") || "en";
-  $("input[type=date]").datepicker("option", $.datepicker.regional[lang]);
+  $("input[type=date1]").datepicker("option", $.datepicker.regional[lang]);
 
 });
