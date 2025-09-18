@@ -450,8 +450,9 @@ def check_metadata_changes(
         _tag_change(change_list, new_tags, old_tags, new)
 
     # if the license has changed
-    new['license_title'] = h.get_package_license_title(new)
-    if old.get("license_title") != new.get("license_title"):
+    if old.get("license_id", '') != new.get("license_id", ''):
+        new['license_title'] = h.get_license_display_title(new.get("license_id", ''))
+        old['license_title'] = h.get_license_display_title(old.get("license_id", ''))
         _license_change(change_list, old, new)
 
     # if the name of the dataset has changed

@@ -153,7 +153,9 @@ def compare_pkg_dicts(
     # display a message stating that
     if len(change_list) == 0:
         change_list.append({"type": "no_change"})
-
+    
+    change_list = h.update_activity_keys(change_list)
+    
     return change_list
 
 

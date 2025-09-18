@@ -4,7 +4,7 @@
 
       {{ _('Added field <q>{key}</q> with value <q>{value}</q> to {pkg_link}').format(
         pkg_link = h.nav_link(change.title, named_route='dataset.read', id=change.pkg_id),
-        key = change.key,
+        key = _(change.key),
         value = change.value
         )}}
 
@@ -12,7 +12,7 @@
 
       {{ _('Added field <q>{key}</q> to {pkg_link}').format(
         pkg_link = h.nav_link(change.title, named_route='dataset.read', id=change.pkg_id),
-        key = change.key
+        key = _(change.key)
         )}}
 
     {% elif change.method == "add_multiple" %}
@@ -25,12 +25,12 @@
           <li>
             {% if change.value_list[item] != "" %}
               {{ _('{key} with value {value}').format(
-                key = item,
+                key = change.display_key_list[item],
                 value = change.value_list[item]
                 )|safe }}
             {% else %}
               {{ _('{key}').format(
-                key = item
+                key = change.display_key_list[item]
                 )|safe }}
             {% endif %}
           </li>
@@ -41,7 +41,7 @@
 
       {{ _('Changed value of field <q>{key}</q> to <q>{new_val}</q> (previously <q>{old_val}</q>) in {pkg_link}').format(
         pkg_link = h.nav_link(change.title, named_route='dataset.read', id=change.pkg_id),
-        key = change.key,
+        key = _(change.key),
         new_val = change.new_value,
         old_val = change.old_value
         )}}
@@ -50,7 +50,7 @@
 
       {{ _('Changed value of field <q>{key}</q> to <q>{new_val}</q> in {pkg_link}').format(
         pkg_link = h.nav_link(change.title, named_route='dataset.read', id=change.pkg_id),
-        key = change.key,
+        key = _(change.key),
         new_val = change.new_value,
         ) }}
 
@@ -58,7 +58,7 @@
 
       {{ _('Removed field <q>{key}</q> from {pkg_link}').format(
         pkg_link = h.nav_link(change.title, named_route='dataset.read', id=change.pkg_id),
-        key = change.key,
+        key = _(change.key),
         ) }}
 
     {% elif change.method == "remove_multiple" %}
@@ -70,7 +70,7 @@
         {% for item in change.key_list %}
           <li>
             {{ _('<q>{key}</q>').format(
-                key = item
+                key = change.display_key_list[item]
             )| safe }}
           </li>
         {% endfor %}

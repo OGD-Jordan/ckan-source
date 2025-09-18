@@ -1,9 +1,22 @@
+  {# Build a string for "value" #}
+  {% if change.value is sequence and not change.value is string %}
+    {# If it's a list of dicts with 'name' (typical tags), extract names #}
+    {% if change.value and change.value[0] is mapping %}
+      {% set value_list = change.value | map(attribute='name') | list %}
+    {% else %}
+      {% set value_list = change.value %}
+    {% endif %}
+    {% set value_str = value_list | join(', ') %}
+  {% else %}
+    {% set value_str = change.value %}
+  {% endif %}
+
 <li>
   <p>
     {{ _('Changed value of field <q>{key}</q> to <q>{value}</q> in {pkg_link}').format(
       pkg_link = h.nav_link(change.title, named_route='dataset.read', id=change.pkg_id),
-      key = change.key,
-      value = change.value
+      key = _(change.key),
+      value = _(value_str)
       )}}
   </p>
 </li>
