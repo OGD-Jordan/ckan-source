@@ -481,9 +481,7 @@ def tag_name_validator(value: Any, context: Context) -> Any:
     """
     tagname_match = re.compile(r'[\w \-.]*$', re.UNICODE)
     if not tagname_match.match(value):
-        raise Invalid(_('Tag "%s" can only contain alphanumeric '
-                        'characters, spaces (" "), hyphens ("-"), '
-                        'underscores ("_") or dots (".")') % (value))
+        raise Invalid(_("Tag '%s' can only contain alphanumeric characters, spaces (' '), hyphens ('-'), underscores ('_') or dots ('.')") % (value))
     return value
 
 def tag_not_uppercase(value: Any, context: Context) -> Any:
