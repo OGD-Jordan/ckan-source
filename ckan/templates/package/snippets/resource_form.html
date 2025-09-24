@@ -20,7 +20,7 @@
 
   {% block basic_fields %}
     {% block basic_fields_url %}
-      {% set is_upload = (data.url_type == 'upload') %}
+      {% set is_upload = (data.url_type == 'upload' or data.get('upload_file_name')) %}
       {% snippet 'package/snippets/resource_upload_field.html',
         data=data,
         errors=errors,

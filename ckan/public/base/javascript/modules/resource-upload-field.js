@@ -1,9 +1,12 @@
 this.ckan.module('resource-upload-field', function (jQuery) {
-  var _nameIsDirty = !! $('input[name="name"]').val();
+  var resourceNameField = $('input[name="name"]');
+  var _nameIsDirty = !! resourceNameField.val();
+  var uploadNameField = $('#field-resource-upload-name');
+  var uploadField = $('#field-resource-upload');
   var urlField = $('#field-resource-url');
   return {
     initialize: function() {
-      $('input[name="name"]').on('change', function() {
+      resourceNameField.on('change', function() {
         _nameIsDirty = true;
       });
 
@@ -17,10 +20,7 @@ this.ckan.module('resource-upload-field', function (jQuery) {
         urlField.attr('type', 'url');
       }) 
 
-      $('#field-resource-upload').on('change', function() {
-        if (_nameIsDirty) {
-          return;
-        }
+      uploadField.on('change', function() {
         var file_name = $(this).val().split(/^C:\\fakepath\\/).pop();
 
         // Internet Explorer 6-11 and Edge 20+
@@ -32,7 +32,13 @@ this.ckan.module('resource-upload-field', function (jQuery) {
           file_name = fName ? fName[0] : file_name;
         }
 
-        $('input[name="name"]').val(file_name);
+        uploadNameField.val(file_name);
+
+        if (_nameIsDirty) {
+          return;
+        }
+
+        resourceNameField.val(file_name);
       });
     }
   }

@@ -20,6 +20,8 @@ placeholder - placeholder text for url field
 #}
 {% import "macros/form.html" as form %}
 
+{% set existing_name = data.get('url', '').split('/')[-1].split('?')[0].split('#')[0] %}
+
 {% set first_button = 'resource-upload-button' if is_upload_enabled else 'resource-link-button' %}
 
 {% macro remove_button(js='') %}
@@ -73,27 +75,34 @@ placeholder - placeholder text for url field
                 onclick="
                   document.getElementById('field-clear-upload').checked = true;
                   document.getElementById('field-resource-upload').focus();
+                  $('#field-resource-url').val('')
                 ">{{ _('Clear Upload') }}</button>
               <label class="form-label">
                 <span title="{{ _('This field is required') }}" class="control-required">*</span>
                 {{ upload_label or _('File') }}
               </label>
               <div class="controls">
-                {% set existing_name = data.get('url', '').split('/')[-1].split('?')[0].split('#')[0] %}
-                <input value="{{ existing_name }}" class="form-control" readonly>
+                <input value="{{ data.get('upload_file_name') or existing_name  }}" class="form-control" readonly>
               </div>
             </div>
           {% endif %}
           <div class="upload-type">
             {{ remove_button(
-              js="$('#field-resource-upload').replaceWith($('#field-resource-upload').val('').clone(true))") }}
+                js="var uploadField = $('#field-resource-upload'); \
+                  uploadField.replaceWith(uploadField.val('').clone(true));\
+                  $('#field-resource-upload-name').val('');"
+                )}}
             {{ form.input(
               'upload',
               label=upload_label or _('File'),
               id='field-resource-upload',
               type='file',
+              value=data.get('upload_file_name') or data.get('url') or existing_name,
+              error=errors.get('upload'),
               classes=['control-full'],
               is_required=true) }}
+            <input type="hidden" id="field-resource-upload-name" name="upload_file_name"
+              value="{{ data.get('upload_file_name') or existing_name }}">
           </div>
         {% endblock %}
       </div>
