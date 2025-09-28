@@ -82,12 +82,19 @@
             <!-- Dropdown for predefined sizes -->
             <div class="form-group mb-3">
               <label for="predefined-size">{{ _("Predefined Dimensions") }}</label>
-              <select id="predefined-size" class="form-select">
-                <option style="direction: ltr;" value="700x400" selected>700 x 400</option>
-                <option style="direction: ltr;" value="400x300">400 x 300</option>
-                <option style="direction: ltr;" value="600x400">600 x 400</option>
-                <option style="direction: ltr;" value="800x600">800 x 600</option>
-                <option style="direction: ltr;" value="1200x800">1200 x 800</option>
+              {% set lang = h.lang() %}
+              {% set is_ar = (lang == 'ar') %}
+              {% set lrm = '\u200E' %} {# Left-to-Right Mark #}
+
+              <select id="predefined-size"
+                      class="form-select"
+                      dir="{{ 'rtl' if is_ar else 'ltr' }}"
+                      style="text-align: {{ 'right' if is_ar else 'left' }};">
+                <option value="700x400" selected>{{ lrm }}700 × 400{{ lrm }}</option>
+                <option value="400x300">{{ lrm }}400 × 300{{ lrm }}</option>
+                <option value="600x400">{{ lrm }}600 × 400{{ lrm }}</option>
+                <option value="800x600">{{ lrm }}800 × 600{{ lrm }}</option>
+                <option value="1200x800">{{ lrm }}1200 × 800{{ lrm }}</option>
               </select>
             </div>
 
