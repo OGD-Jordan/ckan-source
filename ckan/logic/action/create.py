@@ -485,13 +485,16 @@ def resource_create_default_resource_views(
 
     create_datastore_views = ckan.common.asbool(
         data_dict.get('create_datastore_views', False))
+    
+    delete_existing = data_dict.get('delete_existing', False) 
 
     return ckan.lib.datapreview.add_views_to_resource(
         context,
         resource_dict,
         dataset_dict,
         view_types=[],
-        create_datastore_views=create_datastore_views)
+        create_datastore_views=create_datastore_views,
+        delete_existing=delete_existing)
 
 
 def package_create_default_resource_views(

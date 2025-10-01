@@ -653,6 +653,8 @@ def set_datastore_active_flag(
         },
         synchronize_session='fetch',
     )
+
+    resource.extras['datastore_active'] = flag
     model.Session.commit()
     model.Session.expire(resource, ['extras'])
 
