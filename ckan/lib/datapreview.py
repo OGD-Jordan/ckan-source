@@ -152,7 +152,8 @@ def add_views_to_resource(context: Context,
                           resource_dict: dict[str, Any],
                           dataset_dict: Optional[dict[str, Any]] = None,
                           view_types: Optional[list[str]] = None,
-                          create_datastore_views: bool = False
+                          create_datastore_views: bool = False,
+                          delete_existing: bool = False
                           ) -> list[dict[str, Any]]:
     '''
     Creates the provided views (if necessary) on the provided resource
@@ -191,6 +192,10 @@ def add_views_to_resource(context: Context,
 
     existing_views = logic.get_action('resource_view_list')(
         context, {'id': resource_dict['id']})
+    
+    if delete_existing and existing_views:
+        for ev in existing_views:
+            logic.get_action('resource_view_delete')(context, {'id': ev['id']})
 
     existing_view_types = ([v['view_type'] for v in existing_views]
                            if existing_views
@@ -202,7 +207,7 @@ def add_views_to_resource(context: Context,
         view_info = view_plugin.info()
 
         # Check if a view of this type already exists
-        if view_info['name'] in existing_view_types:
+        if not delete_existing and view_info['name'] in existing_view_types:
             continue
 
         # Check if a view of this type can preview this resource
