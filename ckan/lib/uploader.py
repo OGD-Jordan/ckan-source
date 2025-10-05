@@ -9,19 +9,174 @@ import magic
 import mimetypes
 from typing import Any, IO, Optional, Union
 from urllib.parse import urlparse
-
+import re
 from werkzeug.datastructures import FileStorage as FlaskFileStorage
 
 import ckan.lib.munge as munge
 import ckan.logic as logic
 import ckan.plugins as plugins
-from ckan.common import config
+from ckan.common import config, _
 from ckan.types import ErrorDict, PUploader, PResourceUploader
 
 ALLOWED_UPLOAD_TYPES = (cgi.FieldStorage, FlaskFileStorage)
 MB = 1 << 20
 
 log = logging.getLogger(__name__)
+
+
+
+DEFAULT_UPLOAD_RESTRICTIONS = {
+    "user": {
+        "types": ("image",),
+        "mimetypes": (
+            "image/png",
+            "image/gif",
+            "image/jpeg",
+            "image/jpg",
+            "image/bmp",
+            "image/webp",
+            "image/svg+xml",
+            "image/tiff",
+            "image/x-icon",        
+            "image/vnd.microsoft.icon",
+            "image/heif",          
+            "image/heic"
+        ),
+    },
+    "group": {
+        "types": ("image",),
+        "mimetypes": (
+            "image/png",
+            "image/gif",
+            "image/jpeg",
+            "image/jpg",
+            "image/bmp",
+            "image/webp",
+            "image/svg+xml",
+            "image/tiff",
+            "image/x-icon",
+            "image/vnd.microsoft.icon",
+            "image/heif",
+            "image/heic"
+        ),
+    },
+    "admin": {
+        "types": ("image",),
+        "mimetypes": (
+            "image/png",
+            "image/gif",
+            "image/jpeg",
+            "image/jpg",
+            "image/bmp",
+            "image/webp",
+            "image/svg+xml",
+            "image/tiff",
+            "image/x-icon",
+            "image/vnd.microsoft.icon",
+            "image/heif",
+            "image/heic"
+        ),
+    },
+    "footer": {
+        "types": ("image",),
+        "mimetypes": (
+            "image/png",
+            "image/gif",
+            "image/jpeg",
+            "image/jpg",
+            "image/bmp",
+            "image/webp",
+            "image/svg+xml",
+            "image/tiff",
+            "image/x-icon",
+            "image/vnd.microsoft.icon",
+            "image/heif",
+            "image/heic"
+        ),
+    },
+    "issues": {
+        "types": ("image",),
+        "mimetypes": (
+            "image/png",
+            "image/gif",
+            "image/jpeg",
+            "image/jpg",
+            "image/bmp",
+            "image/webp",
+            "image/svg+xml",
+            "image/tiff",
+            "image/x-icon",
+            "image/vnd.microsoft.icon",
+            "image/heif",
+            "image/heic"
+        ),
+    },
+    "showcase": {
+        "types": ("image",),
+        "mimetypes": (
+            "image/png",
+            "image/gif",
+            "image/jpeg",
+            "image/jpg",
+            "image/bmp",
+            "image/webp",
+            "image/svg+xml",
+            "image/tiff",
+            "image/x-icon",
+            "image/vnd.microsoft.icon",
+            "image/heif",
+            "image/heic"
+        ),
+    },
+    "header_logos": {
+        "types": ("image",),
+        "mimetypes": (
+            "image/png",
+            "image/gif",
+            "image/jpeg",
+            "image/jpg",
+            "image/bmp",
+            "image/webp",
+            "image/svg+xml",
+            "image/tiff",
+            "image/x-icon",
+            "image/vnd.microsoft.icon",
+            "image/heif",
+            "image/heic"
+        ),
+    },
+    "pages": {
+        "types": ("image",),
+        "mimetypes": (
+            "image/png",
+            "image/gif",
+            "image/jpeg",
+            "image/jpg",
+            "image/bmp",
+            "image/webp",
+            "image/svg+xml",
+            "image/tiff",
+            "image/x-icon",
+            "image/vnd.microsoft.icon",
+            "image/heif",
+            "image/heic"
+        ),
+    },
+}
+
+
+
+def _normalize_config_list(value: Any) -> list[str]:
+    if not value:
+        return []
+    if isinstance(value, str):
+        # Support whitespace or comma separated values
+        items = re.split(r"[,\s]+", value)
+        return [item for item in items if item]
+    if isinstance(value, (list, tuple, set)):
+        return [str(item) for item in value if item]
+    return [str(value)]
+
 
 
 def _copy_file(input_file: IO[bytes],
@@ -202,21 +357,36 @@ class Upload(object):
                 pass
 
     def verify_type(self):
+        print("POINT0", self.filename, self.upload_file)
         if not self.filename or not self.upload_file:
             return
-
-        mimetypes = config.get(
+        
+        configured_mimetypes = config.get(
             f"ckan.upload.{self.object_type}.mimetypes")
-        types = config.get(f"ckan.upload.{self.object_type}.types")
+        configured_types = config.get(
+            f"ckan.upload.{self.object_type}.types")
+
+        print("POINT1", self.object_type)
+        defaults = DEFAULT_UPLOAD_RESTRICTIONS.get(self.object_type, {})
+        print("POINT2", defaults)
+        mimetypes = (_normalize_config_list(configured_mimetypes)
+                     or list(defaults.get("mimetypes", ())))
+        print("POINT3", mimetypes)
+        types = (_normalize_config_list(configured_types)
+                 or list(defaults.get("types", ())))
+        print("POINT4", types)
+        
         if not mimetypes and not types:
+            print("POINT5")
             return
 
         # 2KB required for detecting xlsx mimetype
         actual = magic.from_buffer(self.upload_file.read(2048), mime=True)
         self.upload_file.seek(0, os.SEEK_SET)
         err: ErrorDict = {
-            self.file_field: [f"Unsupported upload type: {actual}"]
+            self.file_field: [_('Unsupported file type. Please upload an image file')] 
         }
+        print("POINT6", err)
 
         if mimetypes and actual not in mimetypes:
             raise logic.ValidationError(err)

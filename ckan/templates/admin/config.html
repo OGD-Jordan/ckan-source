@@ -6,7 +6,8 @@
 
 {% block primary_content_inner %}
 
-  {{ form.errors(error_summary) }}
+  {% set updated_error_summary = h.convert_error_keys(error_summary, use_conversion_map=false) %}
+  {{ form.errors(updated_error_summary) }}
 
   <form method='post' action="" id="admin-config-form" enctype="multipart/form-data">
     {% block admin_form %}
