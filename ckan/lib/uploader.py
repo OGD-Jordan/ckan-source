@@ -357,7 +357,6 @@ class Upload(object):
                 pass
 
     def verify_type(self):
-        print("POINT0", self.filename, self.upload_file)
         if not self.filename or not self.upload_file:
             return
         
@@ -366,18 +365,13 @@ class Upload(object):
         configured_types = config.get(
             f"ckan.upload.{self.object_type}.types")
 
-        print("POINT1", self.object_type)
         defaults = DEFAULT_UPLOAD_RESTRICTIONS.get(self.object_type, {})
-        print("POINT2", defaults)
         mimetypes = (_normalize_config_list(configured_mimetypes)
                      or list(defaults.get("mimetypes", ())))
-        print("POINT3", mimetypes)
         types = (_normalize_config_list(configured_types)
                  or list(defaults.get("types", ())))
-        print("POINT4", types)
         
         if not mimetypes and not types:
-            print("POINT5")
             return
 
         # 2KB required for detecting xlsx mimetype
@@ -386,7 +380,6 @@ class Upload(object):
         err: ErrorDict = {
             self.file_field: [_('Unsupported file type. Please upload an image file')] 
         }
-        print("POINT6", err)
 
         if mimetypes and actual not in mimetypes:
             raise logic.ValidationError(err)
