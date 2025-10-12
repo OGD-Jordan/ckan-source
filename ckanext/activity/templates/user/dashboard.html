@@ -1,14 +1,23 @@
 {% ckan_extends %}
 
 {% block breadcrumb_content %}
-  <li class="active"><a href="{{ h.url_for('activity.dashboard') }}">{{ _('Dashboard') }}</a></li>
+  <li class="active"><a href="{{ h.url_for('activity.dashboard') }}">{{ _('Activity Dashboard') }}</a></li>
 {% endblock %}
 
-{% block dashboard_nav_links %}
-  {{ h.build_nav_icon('activity.dashboard', _('News feed'), icon='list') }}
-  {{ super() }}
-{% endblock %}
+{% block subtitle %}{{ _('Activity Dashboard') }} {{ g.template_title_delimiter }} {{ user_dict.display_name }} {{ g.template_title_delimiter }} {{ _('Users') }}{% endblock %}
 
+
+  {% block page_header %}
+    <header class="module-content page-header hug">
+    {% block content_primary_nav %}
+      <ul class="nav nav-tabs">
+        {% block dashboard_nav_links %}
+          {{ h.build_nav_icon('activity.dashboard', _('News feed'), icon='list') }}
+        {% endblock %}
+      </ul>
+    {% endblock %}
+    </header>
+  {% endblock %}
 
 {% block primary_content_inner %}
   <div data-module="dashboard">
@@ -19,6 +28,7 @@
       {% endblock %}
       <small class="text-muted fs-5">{{ _("Activity from items that I'm following") }}</small>
     </h2>
+
     {% snippet 'snippets/stream.html', activity_stream=dashboard_activity_stream %}
   </div>
 

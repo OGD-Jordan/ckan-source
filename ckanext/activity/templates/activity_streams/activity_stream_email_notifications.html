@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Activity Dashboard Notification</title>
+  </head>
+
+  {% set num = activities|length %}
+  {% set site = g.site_title if g else site_title %}
+
+  <body>
+<!-- English -->
+<div dir="ltr" style="font-family: Arial, sans-serif;">
+    <b>
+      Subject: 
+      {{ ngettext("You have {num} new activity on your {site} dashboard", 
+                  "You have {num} new activities on your {site} dashboard", num)
+         .format(site=site, num=num) }}
+    </b>
+    <br><br>
+    <p>Dear {{ user_name }},</p>
+    <p>
+      {{ _('To view your dashboard, click on this link:') }}<br>
+      <a href="{% url_for 'activity.dashboard', _external=True %}">{% url_for 'activity.dashboard', _external=True %}</a>
+    </p>
+    <p>
+      {{ _('You can turn off these email notifications in your {site} preferences. '
+            'To change your preferences, click on this link:')
+          .format(site=site) }}<br>
+      <a href="{% url_for 'user.edit', _external=True %}">{% url_for 'user.edit', _external=True %}</a>
+    </p>
+    <p>Best regards,<br>{{ site }}</p>
+</div>
+
+<hr>
+
+<!-- Arabic -->
+<div dir="rtl" style="font-family: Arial, sans-serif; text-align: right;">
+    <b>
+      {% if num == 1 %}
+        الموضوع: لديك نشاط جديد واحد في لوحة معلومات {{ 'بوابة البيانات الحكومية المفتوحة' }}
+      {% else %}
+        الموضوع: لديك {{ num }} أنشطة جديدة في لوحة معلومات {{ 'بوابة البيانات الحكومية المفتوحة' }}
+      {% endif %}
+    </b>
+    <br><br>
+    <p>عزيزي/عزيزتي {{ user_name }},</p>
+    <p>
+      لعرض لوحة المعلومات الخاصة بك، اضغط على هذا الرابط:<br>
+      <a href="{% url_for 'activity.dashboard', _external=True %}">{% url_for 'activity.dashboard', _external=True %}</a>
+    </p>
+    <p>
+      يمكنك إيقاف تشغيل إشعارات البريد الإلكتروني هذه من إعدادات {{ 'بوابة البيانات الحكومية المفتوحة' }} الخاصة بك. 
+      لتغيير إعداداتك، اضغط على هذا الرابط:<br>
+      <a href="{% url_for 'user.edit', _external=True %}">{% url_for 'user.edit', _external=True %}</a>
+    </p>
+    <p>مع أطيب التحيات،<br>
+        بوابة البيانات الحكومية المفتوحة
+    </p>
+</div>
+  </body>
+</html>
