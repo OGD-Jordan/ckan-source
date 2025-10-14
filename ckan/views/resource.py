@@ -318,6 +318,10 @@ class CreateView(MethodView):
 
         errors = errors or {}
         error_summary = error_summary or {}
+        
+        if data and not data.get('url') and not data.get('upload') and not data.get('upload_field_name'):
+            data.pop('url_type', None)
+
         extra_vars: dict[str, Any] = {
             u'data': data,
             u'errors': errors,
@@ -426,6 +430,9 @@ class EditView(MethodView):
 
         errors = errors or {}
         error_summary = error_summary or {}
+        if data and not data.get('url') and not data.get('upload') and not data.get('upload_field_name'):
+            data.pop('url_type', None)
+
         extra_vars: dict[str, Any] = {
             u'data': data,
             u'errors': errors,

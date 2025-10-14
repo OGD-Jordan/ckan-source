@@ -75,7 +75,13 @@ placeholder - placeholder text for url field
                 onclick="
                   document.getElementById('field-clear-upload').checked = true;
                   document.getElementById('field-resource-upload').focus();
-                  $('#field-resource-url').val('')
+                  document.getElementById('resource-url-none').checked = true;
+                  document.getElementById('{{ first_button }}').focus();
+                  $('#field-resource-upload-name').val('');
+                  $('#field-resource-url').val('');
+                  $('#field-resource-upload').replaceWith(uploadField.val('').clone(true));
+                  $('#field-resource-upload').val('');
+                  document.getElementById('resource-url-upload').checked = false;
                 ">{{ _('Clear Upload') }}</button>
               <label class="form-label">
                 <span title="{{ _('This field is required') }}" class="control-required">*</span>
