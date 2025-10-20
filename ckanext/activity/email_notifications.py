@@ -133,7 +133,7 @@ def _notifications_for_activities(
     ).format(site_title=config.get("ckan.site_title"), n=len(activities))
 
     body = render_activity_email(activities, user_dict)
-    notifications = [{"subject": subject, "body": body}]
+    notifications = [{"subject": subject, "body": body, 'activities': activities}]
 
     return notifications
 
@@ -205,6 +205,8 @@ def get_notifications(
     return notifications
 
 
+from ckan.plugins import toolkit as tk
+
 def send_notification(
     user: dict[str, Any], email_dict: dict[str, Any]
 ) -> None:
@@ -216,6 +218,7 @@ def send_notification(
         return
 
     try:
+        _send_on_portal_notifictaion(user, email_dict)
         ckan.lib.mailer.mail_recipient(
             user["display_name"],
             user["email"],
@@ -223,8 +226,53 @@ def send_notification(
             email_dict["body"],
             headers={"Content-Type": "text/html"}
         )
+
+
     except ckan.lib.mailer.MailerException:
         raise
+
+
+def _send_on_portal_notifictaion(
+    user: dict[str, Any], email_dict: dict[str, Any]
+):
+    
+    number_of_activities = len(email_dict.get('activities', []))
+    action_url = tk.h.url_for('activity.dashboard', _external=True)
+    num = int(number_of_activities or 0)
+
+    site_title = tk.config.get('ckan.site_title', 'Open Government Data portal')
+
+    # English
+    if num == 1:
+        subject_en = f"1 new activity from {site_title}"
+        body_en = f"You have 1 new activity on your {site_title} dashboard"
+    else:
+        subject_en = f"{num} new activities from {site_title}"
+        body_en = f"You have {num} new activities on your {site_title} dashboard"
+
+    site_title_ar = 'بوابة البيانات الحكومية المفتوحة'
+    if num == 1:
+        subject_ar = f"نشاط جديد واحد من {site_title_ar}"
+        body_ar = f"لديك نشاط جديد واحد في لوحة معلومات {site_title_ar}"
+    else:
+        subject_ar = f"{num} أنشطة جديدة من {site_title_ar}"
+        body_ar = f"لديك {num} أنشطة جديدة في لوحة معلومات {site_title_ar}"     
+
+    ctx = {
+        'model': model,
+        'user': 'default',
+        'session': model.Session,
+        'ignore_auth': True
+    }
+    data = {
+        'user_id': user.get('id'),         
+        'subject': subject_en,
+        'subject_ar': subject_ar,
+        'body': body_en,
+        'body_ar': body_ar,
+        'action_url': action_url,
+    }
+    tk.get_action('generate_notification')(ctx, data)   
 
 
 def get_and_send_notifications_for_user(user: dict[str, Any]) -> None:
