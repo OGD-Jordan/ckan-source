@@ -61,7 +61,6 @@ openpyxl==3.1.5
 packaging==21.3
 passlib==1.7.4
 pbr==6.0.0
-pkg_resources==0.0.0
 pluggy==1.5.0
 polib==1.1.1
 progressbar==2.5
@@ -92,7 +91,6 @@ s3transfer==0.10.2
 simplejson==3.17.6
 six==1.16.0
 soupsieve==2.5
-SQLAlchemy==1.4.41
 sqlalchemy2-stubs==0.0.2a27
 sqlparse==0.4.2
 tabulator==1.53.5
