@@ -205,8 +205,9 @@ class CreateView(MethodView):
         })
 
         # see if we have any data that we are trying to save
-        data_provided = False
+        data_provided = False if save_action == 'go-metadata' else True
         for key, value in data.items():
+            if data_provided:   break
             if (
                     (value or isinstance(value, cgi.FieldStorage))
                     and key != u'resource_type'):
