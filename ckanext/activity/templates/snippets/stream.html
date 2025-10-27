@@ -1,6 +1,7 @@
 {% macro actor(activity) %}
-  <span>
-    {{ h.linked_user(activity.user_id, 0, 30) }}
+  {% set actor_name = h.get_activity_actor_display_name(activity)|safe %}
+  <span class="actor">
+    {{ actor_name }}
   </span>
 {% endmacro %}
 

@@ -9,6 +9,7 @@ from markupsafe import Markup
 
 import ckan.model as model
 import ckan.plugins.toolkit as tk
+from ckan.lib.helpers import helper_functions as h
 
 from ckan.types import Context
 from . import changes
@@ -191,7 +192,7 @@ def compare_group_dicts(
 def activity_show_email_notifications() -> bool:
     return tk.config.get("ckan.activity_streams_email_notifications")
 
-from ckan.lib.helpers import helper_functions as h
+
 def convert_activity_stream_for_display_names(activity_stream):
     display_names_dict = {}
     for activity in activity_stream:
@@ -208,7 +209,7 @@ def convert_activity_stream_for_display_names(activity_stream):
                 display_names_dict[group_id] = display_name
             
             group_dict['display_name'] = display_names_dict[group_id]
-        
+
 
         if 'organization' in activity.get('data', {}):
             group_dict = activity['data']['organization']
@@ -223,4 +224,128 @@ def convert_activity_stream_for_display_names(activity_stream):
                 display_names_dict[group_id] = display_name
             
             group_dict['display_name'] = display_names_dict[group_id]
+
+        package_dict = activity.get('data', {}).get('package')
+        if isinstance(package_dict, dict):
+            organization_dict = package_dict.get('organization') or {}
+            org_id = organization_dict.get('id') or package_dict.get('owner_org')
+
+            if org_id and org_id not in display_names_dict:
+                group_obj = model.Group.get(org_id)
+                if group_obj:
+                    display_name = group_obj.title
+                    if h.lang() == 'ar':
+                        title_arabic = group_obj.extras.get('title_arabic', '')
+                        display_name = title_arabic or display_name
+                    display_names_dict[org_id] = display_name
+
+            if organization_dict and org_id in display_names_dict:
+                organization_dict['display_name'] = display_names_dict[org_id]
+            elif org_id in display_names_dict:
+                package_dict['organization'] = {
+                    'id': org_id,
+                    'display_name': display_names_dict[org_id],
+                }
     return activity_stream
+
+
+def _extras_to_dict(extras: Any) -> dict[str, Any]:
+    if isinstance(extras, dict):
+        return extras
+    if isinstance(extras, list):
+        result: dict[str, Any] = {}
+        for item in extras:
+            if isinstance(item, dict):
+                key = item.get('key')
+                value = item.get('value')
+                if key:
+                    result[key] = value
+        return result
+    return {}
+
+
+def _group_display_name_from_obj(group_obj: Optional[model.Group]) -> Optional[str]:
+    if not group_obj:
+        return None
+
+    display_name = group_obj.title or group_obj.name
+    if h.lang() == 'ar':
+        extras_dict = getattr(group_obj, 'extras', {}) or {}
+        if isinstance(extras_dict, dict):
+            title_arabic = extras_dict.get('title_arabic') or extras_dict.get('title_ar')
+        else:
+            title_arabic = None
+        if title_arabic:
+            display_name = title_arabic
+    return display_name
+
+
+def _group_display_name_from_dict(group_dict: dict[str, Any]) -> Optional[str]:
+    if not group_dict:
+        return None
+
+    display_name = group_dict.get('display_name') or group_dict.get('title') or group_dict.get('name')
+
+    if h.lang() == 'ar':
+        for key in ('title_arabic', 'title_ar', 'display_name_ar', 'name_ar'):
+            title_arabic = group_dict.get(key)
+            if title_arabic:
+                display_name = title_arabic
+                break
+        else:
+            extras_dict = _extras_to_dict(group_dict.get('extras'))
+            title_arabic = extras_dict.get('title_arabic') or extras_dict.get('title_ar')
+            if title_arabic:
+                display_name = title_arabic
+    return display_name
+
+
+def _activity_get(activity: Any, key: str, default: Any = None) -> Any:
+    if isinstance(activity, dict):
+        return activity.get(key, default)
+    return getattr(activity, key, default)
+
+
+def get_activity_actor_display_name(activity: Any) -> str:
+    activity_data = _activity_get(activity, 'data') or {}
+
+    package_dict = activity_data.get('package') or {}
+    if isinstance(package_dict, dict):
+        organization_dict = package_dict.get('organization') or {}
+        if organization_dict:
+            display_name = _group_display_name_from_dict(organization_dict)
+            if display_name:
+                url = h.url_for("organization.read", id=organization_dict.get('id'))
+                return f'<a href="{url}">{display_name}</a>'
+                return display_name
+
+        owner_org_id = package_dict.get('owner_org')
+        if owner_org_id:
+            display_name = _group_display_name_from_obj(model.Group.get(owner_org_id))
+            if display_name:
+                return '<a href="/organization/{}">{}</a>'.format(object_id, display_name)
+                return display_name
+
+    organization_dict = activity_data.get('organization') or {}
+    if organization_dict:
+        display_name = _group_display_name_from_dict(organization_dict)
+        if display_name:
+            return '<a href="/organization/{}">{}</a>'.format(object_id, display_name)
+            return display_name
+
+    group_dict = activity_data.get('group') or {}
+    if group_dict:
+        display_name = _group_display_name_from_dict(group_dict)
+        if display_name:
+            return '<a href="/group/{}">{}</a>'.format(object_id, display_name)
+            return display_name
+
+    object_id = _activity_get(activity, 'object_id')
+    if object_id:
+        display_name = _group_display_name_from_obj(model.Group.get(object_id))
+        if display_name:
+            return '<a href="/group/{}">{}</a>'.format(object_id, display_name)
+            return display_name
+
+    
+    return tk.h.linked_user(activity.get('user_id')) or tk._('Unknown actor')

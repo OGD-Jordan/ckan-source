@@ -1,4 +1,6 @@
-<strong>{{ gettext('On %(timestamp)s, %(username)s:', timestamp=h.render_datetime(activity_diff.activities[1].timestamp, with_hours=True, with_seconds=True), username=h.linked_user(activity_diff.activities[1].user_id)) }}</strong>
+{% set actor_name = h.get_activity_actor_display_name(activity_diff.activities[1])|safe %}
+
+<strong>{{ gettext('On %(timestamp)s, %(actor)s:', timestamp=h.render_datetime(activity_diff.activities[1].timestamp, with_hours=True, with_seconds=True), actor=actor_name) }}</strong>
 
 {% set changes = h.compare_group_dicts(activity_diff.activities[0].data.group, activity_diff.activities[1].data.group, activity_diff.activities[0].id) %}
 <ul>
