@@ -318,6 +318,7 @@ def _get_schema_from_solr(file_offset: str):
     url = solr_url.strip('/') + file_offset
 
     timeout = config.get('ckan.requests.timeout')
+    timeout = int(config.get('solr_timeout',60))
     if solr_user is not None and solr_password is not None:
         response = requests.get(
             url,
