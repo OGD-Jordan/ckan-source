@@ -112,8 +112,8 @@ def load_config(config: Any, load_site_user: bool = True):
     assert 'ckan' not in dir()  # otherwise loggers would be disabled
     # We have now loaded the config. Now we can import ckan for the
     # first time.
-    from ckan.config.environment import load_environment
-    load_environment(conf)
+    # from ckan.config.environment import load_environment
+    # load_environment(conf)
 
     # Set this internal test request context with the configured environment so
     # it can be used when calling url_for from the CLI.

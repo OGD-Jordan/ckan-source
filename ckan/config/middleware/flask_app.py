@@ -448,7 +448,11 @@ def ckan_after_request(response: Response) -> Response:
     status_code = response.status_code
 
     log.info(' %s %s render time %.3f seconds' % (status_code, url, r_time))
-
+    
+    rid = request.headers.get('X-Request-ID', '-')
+    log.info('req_id=%s handler_ms=%.1f path=%s qs=%s status=%s',
+                rid, request.path, request.query_string.decode(), response.status_code)
+    
     return response
 
 

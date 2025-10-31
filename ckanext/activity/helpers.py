@@ -317,35 +317,30 @@ def get_activity_actor_display_name(activity: Any) -> str:
             if display_name:
                 url = h.url_for("organization.read", id=organization_dict.get('id'))
                 return f'<a href="{url}">{display_name}</a>'
-                return display_name
 
         owner_org_id = package_dict.get('owner_org')
         if owner_org_id:
             display_name = _group_display_name_from_obj(model.Group.get(owner_org_id))
             if display_name:
                 return '<a href="/organization/{}">{}</a>'.format(object_id, display_name)
-                return display_name
 
     organization_dict = activity_data.get('organization') or {}
     if organization_dict:
         display_name = _group_display_name_from_dict(organization_dict)
         if display_name:
             return '<a href="/organization/{}">{}</a>'.format(object_id, display_name)
-            return display_name
 
     group_dict = activity_data.get('group') or {}
     if group_dict:
         display_name = _group_display_name_from_dict(group_dict)
         if display_name:
-            return '<a href="/group/{}">{}</a>'.format(object_id, display_name)
-            return display_name
+            return '<a href="/group/{}">{}</a>'.format(group_dict.get('id'), display_name)
 
     object_id = _activity_get(activity, 'object_id')
     if object_id:
         display_name = _group_display_name_from_obj(model.Group.get(object_id))
         if display_name:
             return '<a href="/group/{}">{}</a>'.format(object_id, display_name)
-            return display_name
 
     
     return tk.h.linked_user(activity.get('user_id')) or tk._('Unknown actor')
