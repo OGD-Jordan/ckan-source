@@ -427,7 +427,7 @@ def ckan_before_request() -> Optional[Response]:
     set_controller_and_action()
 
     set_ckan_current_url(request.environ)
-
+    g._t0 = time.time()
     return response
 
 
@@ -449,9 +449,10 @@ def ckan_after_request(response: Response) -> Response:
 
     log.info(' %s %s render time %.3f seconds' % (status_code, url, r_time))
     
+    t = (time.time() - getattr(g, '_t0', time.time())) * 1000
     rid = request.headers.get('X-Request-ID', '-')
     log.info('req_id=%s handler_ms=%.1f path=%s qs=%s status=%s',
-                rid, request.path, request.query_string.decode(), response.status_code)
+                rid, t, request.path, request.query_string.decode(), response.status_code)
     
     return response
 
