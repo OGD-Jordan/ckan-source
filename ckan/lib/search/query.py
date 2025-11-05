@@ -423,7 +423,7 @@ class PackageSearchQuery(SearchQuery):
         query['fq'] = fq
 
         # faceting
-        query['facet'] = query.get('facet', 'true')
+        query['facet'] = query.get('facet', 'false')
         query['facet.limit'] = query.get('facet.limit', config.get('search.facets.limit'))
         query['facet.mincount'] = query.get('facet.mincount', 1)
 

@@ -321,6 +321,7 @@ def search(package_type: str) -> str:
         u'start': (page - 1) * limit,
         u'sort': sort_by,
         u'extras': search_extras,
+        u'facet': 'true',
         u'include_private': config.get(
             u'ckan.search.default_include_private'),
     }
