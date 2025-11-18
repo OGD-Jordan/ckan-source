@@ -8,7 +8,17 @@
 {% endblock %}
 
 {% block primary_content %}
-  <section class="module">
+  {% asset 'theme/theme-dataset-search' %}
+  <section class="module dataset-search-module"
+           data-module="theme-dataset-search"
+           data-results-action="theme_dataset_search_results"
+           data-facets-action="theme_dataset_search_facets"
+           data-dataset-type="{{ dataset_type }}"
+           data-site-locale="{{ h.lang() }}"
+           data-current-endpoint="{{ request.endpoint }}"
+           data-empty-text="{{ _('No datasets were found that match your search criteria.') }}"
+           data-error-text="{{ _('We were unable to load datasets. Please try again.') }}"
+           data-facets-target="#dataset-search-facets">
     <div class="module-content">
       {% block page_primary_action %}
         {% if h.check_access('package_create') %}
@@ -18,29 +28,51 @@
         {% endif %}
       {% endblock %}
       {% block form %}
-        {% set facets = {
-          'fields': fields_grouped,
-          'search': search_facets,
-          'titles': facet_titles,
-          'translated_fields': translated_fields,
-          'remove_field': remove_field }
-        %}
-        {% set sorting = [
-          (_('Relevance'), 'score desc, metadata_modified desc'),
-          (_('Name Ascending'), 'title_string asc'),
-          (_('Name Descending'), 'title_string desc'),
-          (_('Last Modified'), 'metadata_modified desc'),
-          (_('Popular'), 'views_recent desc') if g.tracking_enabled else (false, false) ]
-        %}
-        {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count=page.item_count, placeholder=h.humanize_entity_type('package', dataset_type, 'search placeholder') or _('Search datasets...'), facets=facets, show_empty=request.args, error=query_error, fields=fields %}
+        <div class="dataset-search__form js-dataset-form" aria-live="polite">
+          <div class="dataset-search__loader" role="status">
+            <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+            <span class="sr-only">{{ _('Loading search filters...') }}</span>
+          </div>
+          <noscript>
+            {% set facets = {
+              'fields': fields_grouped,
+              'search': search_facets,
+              'titles': facet_titles,
+              'translated_fields': translated_fields,
+              'remove_field': remove_field }
+            %}
+            {% set sorting = [
+              (_('Relevance'), 'score desc, metadata_modified desc'),
+              (_('Name Ascending'), 'title_string asc'),
+              (_('Name Descending'), 'title_string desc'),
+              (_('Last Modified'), 'metadata_modified desc'),
+              (_('Popular'), 'views_recent desc') if g.tracking_enabled else (false, false) ]
+            %}
+            {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count=page.item_count, placeholder=h.humanize_entity_type('package', dataset_type, 'search placeholder') or _('Search datasets...'), facets=facets, show_empty=request.args, error=query_error, fields=fields %}
+          </noscript>
+        </div>
       {% endblock %}
       {% block package_search_results_list %}
-        {{ h.snippet('snippets/package_list.html', packages=page.items) }}
+        <div class="dataset-search__results js-dataset-results" aria-live="polite">
+          <div class="dataset-search__loader" role="status">
+            <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+            <span class="sr-only">{{ _('Loading datasets...') }}</span>
+          </div>
+          <noscript>
+            {{ h.snippet('snippets/package_list.html', packages=page.items) }}
+          </noscript>
+        </div>
       {% endblock %}
     </div>
 
     {% block page_pagination %}
-      {{ page.pager(q=q) }}
+      <div class="dataset-search__pagination js-dataset-pagination" aria-live="polite">
+        <div class="dataset-search__loader" role="status">
+        </div>
+        <noscript>
+          {{ page.pager(q=q) }}
+        </noscript>
+      </div>
     {% endblock %}
   </section>
 
@@ -70,11 +102,25 @@
 
 
 {% block secondary_content %}
-  <div class="filters">
-    <div>
+  <div class="filters js-dataset-facets" id="dataset-search-facets">
+    <div class="js-dataset-facets-body">
       {% for facet in facet_titles %}
-        {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet, search_facets=search_facets) }}
+        <section class="module module-narrow module-shallow">
+          <h2 class="module-heading">
+            <i class="fa fa-filter"></i>
+            {{ facet_titles[facet] }}
+          </h2>
+          <div class="dataset-search__loader" role="status">
+            <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+            <span class="sr-only">{{ _('Loading {facet_type} options...').format(facet_type=facet_titles[facet]) }}</span>
+          </div>
+        </section>
       {% endfor %}
+      <noscript>
+        {% for facet in facet_titles %}
+          {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet, search_facets=search_facets) }}
+        {% endfor %}
+      </noscript>
     </div>
     <a class="close no-text hide-filters"><i class="fa fa-times-circle"></i><span class="text">close</span></a>
   </div>

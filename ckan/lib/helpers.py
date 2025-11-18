@@ -1907,6 +1907,12 @@ def add_url_param(alternative_url: Optional[str] = None,
     ]
     if new_params:
         params_nopage += list(new_params.items())
+
+    params_nopage = [
+        (key, value)
+        for key, value in params_nopage
+        if key not in {'dataset_type', 'locale', 'current_endpoint'}
+    ]
     if alternative_url:
         return _url_with_params(alternative_url, params_nopage)
     return _create_url_with_params(params=params_nopage, controller=controller,
@@ -1958,6 +1964,12 @@ def remove_url_param(key: Union[list[str], str],
                     params.remove((k, v))
     if replace is not None:
         params.append((keys[0], replace))
+
+    params = [
+        (key, value)
+        for key, value in params
+        if key not in {'dataset_type', 'locale', 'current_endpoint'}
+    ]
 
     if alternative_url:
         return _url_with_params(alternative_url, params)

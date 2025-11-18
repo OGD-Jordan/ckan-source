@@ -173,7 +173,9 @@ def _get_package_type(id: str) -> str:
     return u'dataset'
 
 
-def _get_search_details() -> dict[str, Any]:
+def _get_search_details(args: Optional[MultiDict[str, Any]] = None) -> dict[str, Any]:
+    if args is None:
+        args = request.args
     fq = u''
 
     # fields_grouped will contain a dict of params containing
@@ -183,7 +185,7 @@ def _get_search_details() -> dict[str, Any]:
     fields_grouped = {}
     search_extras: 'MultiDict[str, Any]' = MultiDict()
 
-    for (param, value) in request.args.items(multi=True):
+    for (param, value) in args.items(multi=True):
         if param not in [u'q', u'page', u'sort'] \
                 and len(value) and not param.startswith(u'_'):
             if not param.startswith(u'ext_'):
@@ -207,82 +209,8 @@ def _get_search_details() -> dict[str, Any]:
         u'search_extras': extras,
     }
 
-
-def search(package_type: str) -> str:
-    extra_vars: dict[str, Any] = {}
-
-    try:
-        context = cast(Context, {
-            u'model': model,
-            u'user': current_user.name,
-            u'auth_user_obj': current_user
-        })
-        check_access(u'site_read', context)
-    except NotAuthorized:
-        base.abort(403, _(u'Not authorized to see this page'))
-
-    # unicode format (decoded from utf8)
-    extra_vars[u'q'] = q = request.args.get(u'q', u'')
-
-    extra_vars['query_error'] = False
-    page = h.get_page_number(request.args)
-
-    limit = config.get(u'ckan.datasets_per_page')
-
-    # most search operations should reset the page counter:
-    params_nopage = [(k, v) for k, v in request.args.items(multi=True)
-                     if k != u'page']
-
-    extra_vars[u'remove_field'] = partial(remove_field, package_type)
-
-    sort_by = request.args.get(u'sort', None)
-    params_nosort = [(k, v) for k, v in params_nopage if k != u'sort']
-
-    extra_vars[u'sort_by'] = partial(_sort_by, params_nosort, package_type)
-
-    if not sort_by:
-        sort_by_fields = []
-    else:
-        sort_by_fields = [field.split()[0] for field in sort_by.split(u',')]
-    extra_vars[u'sort_by_fields'] = sort_by_fields
-
-    pager_url = partial(_pager_url, params_nopage, package_type)
-
-    details = _get_search_details()
-    extra_vars[u'fields'] = details[u'fields']
-    extra_vars[u'fields_grouped'] = details[u'fields_grouped']
-    fq = details[u'fq']
-    search_extras = details[u'search_extras']
-
-    context = cast(Context, {
-        u'model': model,
-        u'session': model.Session,
-        u'user': current_user.name,
-        u'for_view': True,
-        u'auth_user_obj': current_user
-    })
-
-    # Unless changed via config options, don't show other dataset
-    # types any search page. Potential alternatives are do show them
-    # on the default search page (dataset) or on one other search page
-    search_all_type = config.get(u'ckan.search.show_all_types')
-    search_all = False
-
-    try:
-        # If the "type" is set to True or False, convert to bool
-        # and we know that no type was specified, so use traditional
-        # behaviour of applying this only to dataset type
-        search_all = asbool(search_all_type)
-        search_all_type = u'dataset'
-    # Otherwise we treat as a string representing a type
-    except ValueError:
-        search_all = True
-
-    if not search_all or package_type != search_all_type:
-        # Only show datasets of this particular type
-        fq += u' +dataset_type:{type}'.format(type=package_type)
-
-    facets: dict[str, str] = OrderedDict()
+def build_dataset_facets(package_type: str) -> OrderedDict[str, str]:
+    facets: OrderedDict[str, str] = OrderedDict()
 
     org_label = h.humanize_entity_type(
         u'organization',
@@ -308,77 +236,165 @@ def search(package_type: str) -> str:
         else:
             facets[facet] = facet
 
-    # Facet titles
     for plugin in plugins.PluginImplementations(plugins.IFacets):
         facets = plugin.dataset_facets(facets, package_type)
 
-    extra_vars[u'facet_titles'] = facets
-    data_dict: dict[str, Any] = {
-        u'q': q,
-        u'fq': fq.strip(),
-        u'facet.field': list(facets.keys()),
-        u'rows': limit,
-        u'start': (page - 1) * limit,
-        u'sort': sort_by,
-        u'extras': search_extras,
-        u'facet': 'true',
-        u'include_private': config.get(
-            u'ckan.search.default_include_private'),
-    }
+    return facets
+
+
+def apply_package_type_filter(fq: str, package_type: str) -> str:
+    search_all_type = config.get(u'ckan.search.show_all_types')
+    search_all = False
+
     try:
-        query = get_action(u'package_search')(context, data_dict)
+        search_all = asbool(search_all_type)
+        search_all_type = u'dataset'
+    except ValueError:
+        search_all = True
 
-        extra_vars[u'sort_by_selected'] = query[u'sort']
+    if not search_all or package_type != search_all_type:
+        fq += u' +dataset_type:{type}'.format(type=package_type)
 
-        extra_vars[u'page'] = Page(
-            collection=query[u'results'],
-            page=page,
-            url=pager_url,
-            item_count=query[u'count'],
-            items_per_page=limit
-        )
-        extra_vars[u'search_facets'] = query[u'search_facets']
-        extra_vars[u'page'].items = query[u'results']
-    except SearchQueryError as se:
-        # User's search parameters are invalid, in such a way that is not
-        # achievable with the web interface, so return a proper error to
-        # discourage spiders which are the main cause of this.
-        log.info(u'Dataset search query rejected: %r', se.args)
-        base.abort(
-            400,
-            _(u'Invalid search query: {error_message}')
-            .format(error_message=str(se))
-        )
-    except SearchError as se:
-        # May be bad input from the user, but may also be more serious like
-        # bad code causing a SOLR syntax error, or a problem connecting to
-        # SOLR
-        log.error(u'Dataset search error: %r', se.args)
-        extra_vars[u'query_error'] = True
-        extra_vars[u'search_facets'] = {}
-        extra_vars[u'page'] = Page(collection=[])
+    return fq
+
+
+
+def search(package_type: str) -> str:
+    extra_vars: dict[str, Any] = {}
+
+    try:
+        context = cast(Context, {
+            u'model': model,
+            u'user': current_user.name,
+            u'auth_user_obj': current_user
+        })
+        check_access(u'site_read', context)
+    except NotAuthorized:
+        base.abort(403, _(u'Not authorized to see this page'))
+
+    # unicode format (decoded from utf8)
+    extra_vars[u'q'] = q = request.args.get(u'q', u'')
+
+    extra_vars['query_error'] = False
+    # page = h.get_page_number(request.args)
+
+    # limit = config.get(u'ckan.datasets_per_page')
+
+    # most search operations should reset the page counter:
+    params_nopage = [(k, v) for k, v in request.args.items(multi=True)
+                     if k != u'page']
+
+    extra_vars[u'remove_field'] = partial(remove_field, package_type)
+
+    sort_by = request.args.get(u'sort', None)
+    params_nosort = [(k, v) for k, v in params_nopage if k != u'sort']
+
+    extra_vars[u'sort_by'] = partial(_sort_by, params_nosort, package_type)
+
+    if not sort_by:
+        sort_by_fields = []
+    else:
+        sort_by_fields = [field.split()[0] for field in sort_by.split(u',')]
+    extra_vars[u'sort_by_fields'] = sort_by_fields
+
+    # pager_url = partial(_pager_url, params_nopage, package_type)
+
+    # details = _get_search_details()
+    # extra_vars[u'fields'] = details[u'fields']
+    # extra_vars[u'fields_grouped'] = details[u'fields_grouped']
+    # fq = details[u'fq']
+    # search_extras = details[u'search_extras']
+
+    # context = cast(Context, {
+    #     u'model': model,
+    #     u'session': model.Session,
+    #     u'user': current_user.name,
+    #     u'for_view': True,
+    #     u'auth_user_obj': current_user
+    # })
+
+    # Unless changed via config options, don't show other dataset
+    # types any search page. Potential alternatives are do show them
+    # on the default search page (dataset) or on one other search page
+    # fq = apply_package_type_filter(fq, package_type)
+
+    facets = build_dataset_facets(package_type)
+
+    extra_vars[u'facet_titles'] = facets
+
+    # data_dict: dict[str, Any] = {
+    #     u'q': q,
+    #     u'fq': fq.strip(),
+    #     u'facet.field': list(facets.keys()),
+    #     u'rows': limit,
+    #     u'start': (page - 1) * limit,
+    #     u'sort': sort_by,
+    #     u'extras': search_extras,
+    #     u'facet': 'true',
+    #     u'include_private': config.get(
+    #         u'ckan.search.default_include_private'),
+    # }
+    # try:
+    #     query = get_action(u'package_search')(context, data_dict)
+
+    #     extra_vars[u'sort_by_selected'] = query[u'sort']
+
+    #     extra_vars[u'page'] = Page(
+    #         collection=query[u'results'],
+    #         page=page,
+    #         url=pager_url,
+    #         item_count=query[u'count'],
+    #         items_per_page=limit
+    #     )
+    #     extra_vars[u'search_facets'] = query[u'search_facets']
+    #     extra_vars[u'page'].items = query[u'results']
+    # except SearchQueryError as se:
+    #     # User's search parameters are invalid, in such a way that is not
+    #     # achievable with the web interface, so return a proper error to
+    #     # discourage spiders which are the main cause of this.
+    #     log.info(u'Dataset search query rejected: %r', se.args)
+    #     base.abort(
+    #         400,
+    #         _(u'Invalid search query: {error_message}')
+    #         .format(error_message=str(se))
+    #     )
+    # except SearchError as se:
+    #     # May be bad input from the user, but may also be more serious like
+    #     # bad code causing a SOLR syntax error, or a problem connecting to
+    #     # SOLR
+    #     log.error(u'Dataset search error: %r', se.args)
+    #     extra_vars[u'query_error'] = True
+    #     extra_vars[u'search_facets'] = {}
+    #     extra_vars[u'page'] = Page(collection=[])
+
+
 
     # FIXME: try to avoid using global variables
     g.search_facets_limits = {}
-    default_limit: int = config.get(u'search.facets.default')
-    for facet in cast(Iterable[str], extra_vars[u'search_facets'].keys()):
-        try:
-            limit = int(
-                request.args.get(
-                    u'_%s_limit' % facet,
-                    default_limit
-                )
-            )
-        except ValueError:
-            base.abort(
-                400,
-                _(u'Parameter u"{parameter_name}" is not '
-                  u'an integer').format(parameter_name=u'_%s_limit' % facet)
-            )
 
-        g.search_facets_limits[facet] = limit
+    # extra_vars[u'search_facets'] = {}
+    # extra_vars[u'page'] = Page(collection=[])
+    # extra_vars[u'data_dict'] = data_dict
+    
+    # default_limit: int = config.get(u'search.facets.default')
+    # for facet in cast(Iterable[str], extra_vars[u'search_facets'].keys()):
+    #     try:
+    #         limit = int(
+    #             request.args.get(
+    #                 u'_%s_limit' % facet,
+    #                 default_limit
+    #             )
+    #         )
+    #     except ValueError:
+    #         base.abort(
+    #             400,
+    #             _(u'Parameter u"{parameter_name}" is not '
+    #               u'an integer').format(parameter_name=u'_%s_limit' % facet)
+    #         )
 
-    _setup_template_variables(context, {}, package_type=package_type)
+    #     g.search_facets_limits[facet] = limit
+
+    # _setup_template_variables(context, {}, package_type=package_type)
 
     extra_vars[u'dataset_type'] = package_type
 
