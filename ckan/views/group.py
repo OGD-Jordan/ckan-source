@@ -330,7 +330,8 @@ def _read(id: Optional[str], limit: int, group_type: str) -> dict[str, Any]:
         u'rows': limit,
         u'sort': sort_by,
         u'start': (page - 1) * limit,
-        u'extras': search_extras
+        u'extras': search_extras,
+        u'facet': 'true'
     }
 
     context_ = cast(
