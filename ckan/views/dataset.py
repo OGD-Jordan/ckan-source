@@ -373,7 +373,7 @@ def search(package_type: str) -> str:
     g.search_facets_limits = {}
 
     # extra_vars[u'search_facets'] = {}
-    # extra_vars[u'page'] = Page(collection=[])
+    extra_vars[u'page'] = Page(collection=[])
     # extra_vars[u'data_dict'] = data_dict
     
     # default_limit: int = config.get(u'search.facets.default')
