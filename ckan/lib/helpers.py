@@ -394,6 +394,8 @@ def url_for(*args: Any, **kw: Any) -> str:
     kw['__ckan_no_root'] = no_root
 
     # Rewrite the URL to take the locale and root_path into account
+    if (not locale or locale == 'default') and request.environ.get('CKAN_LANG'):
+        locale = request.environ.get('CKAN_LANG')
     return _local_url(my_url, locale=locale, **kw)
 
 
@@ -1911,7 +1913,7 @@ def add_url_param(alternative_url: Optional[str] = None,
     params_nopage = [
         (key, value)
         for key, value in params_nopage
-        if key not in {'dataset_type', 'locale', 'current_endpoint'}
+        if key not in {'dataset_type', 'locale_lang', 'current_endpoint'}
     ]
     if alternative_url:
         return _url_with_params(alternative_url, params_nopage)
@@ -1955,6 +1957,7 @@ def remove_url_param(key: Union[list[str], str],
         if k != 'page'
     ]
     params = list(params_nopage)
+    
     if value:
         params.remove((keys[0], value))
     else:
@@ -1968,7 +1971,7 @@ def remove_url_param(key: Union[list[str], str],
     params = [
         (key, value)
         for key, value in params
-        if key not in {'dataset_type', 'locale', 'current_endpoint'}
+        if key not in {'dataset_type', 'locale_lang', 'current_endpoint'}
     ]
 
     if alternative_url:
