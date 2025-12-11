@@ -32,7 +32,7 @@ from ckan.common import asbool, config, current_user
 from flask import flash
 from flask import get_flashed_messages as _flask_get_flashed_messages
 from flask import redirect as _flask_redirect
-from flask import _request_ctx_stack
+from flask import _request_ctx_stack, has_request_context
 from flask import url_for as _flask_default_url_for
 from werkzeug.routing import BuildError as FlaskRouteBuildError
 from ckan.lib import i18n
@@ -394,7 +394,7 @@ def url_for(*args: Any, **kw: Any) -> str:
     kw['__ckan_no_root'] = no_root
 
     # Rewrite the URL to take the locale and root_path into account
-    if (not locale or locale == 'default') and request.environ.get('CKAN_LANG'):
+    if (not locale or locale == 'default') and  has_request_context() and request.environ.get('CKAN_LANG'):
         locale = request.environ.get('CKAN_LANG')
     return _local_url(my_url, locale=locale, **kw)
 
