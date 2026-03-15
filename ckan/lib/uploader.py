@@ -162,9 +162,62 @@ DEFAULT_UPLOAD_RESTRICTIONS = {
             "image/heic"
         ),
     },
+    "page_images1": {
+        "types": ("image",),
+        "mimetypes": (
+            "image/png",
+            "image/gif",
+            "image/jpeg",
+            "image/jpg",
+            "image/bmp",
+            "image/webp",
+            "image/svg+xml",
+            "image/tiff",
+            "image/x-icon",
+            "image/vnd.microsoft.icon",
+            "image/heif",
+            "image/heic"
+        ),
+    },
 }
 
+BLOCKED_EXTENSIONS = {
+    ".html",
+    ".htm",
+    ".xhtml",
+    ".svg",
+    ".xml",
+    ".js",
+    ".mjs",
+    ".jsp",
+    ".php",
+    ".php3",
+    ".php4",
+    ".php5",
+    ".phtml",
+    ".asp",
+    ".aspx",
+    ".sh",
+    ".bat",
+    ".cmd",
+    ".exe",
+    ".dll",
+}
 
+BLOCKED_MIMETYPES = {
+    "text/html",
+    "application/xhtml+xml",
+    "image/svg+xml",
+    "application/xml",
+    "text/xml",
+    "application/javascript",
+    "text/javascript",
+    "application/x-javascript",
+    "application/ecmascript",
+    "text/ecmascript",
+    "application/x-sh",
+    "application/x-httpd-php",
+}
 
 def _normalize_config_list(value: Any) -> list[str]:
     if not value:
@@ -192,7 +245,7 @@ def _copy_file(input_file: IO[bytes],
             break
         output_file.write(data)
         if current_size > max_size:
-            raise logic.ValidationError({'upload': ['File upload too large']})
+            raise logic.ValidationError({'upload': [_('File upload too large')]})
 
 
 def _get_underlying_file(wrapper: Union[FlaskFileStorage, cgi.FieldStorage]):
@@ -359,32 +412,55 @@ class Upload(object):
     def verify_type(self):
         if not self.filename or not self.upload_file:
             return
-        
+
         configured_mimetypes = config.get(
-            f"ckan.upload.{self.object_type}.mimetypes")
+            f"ckan.upload.{self.object_type}.mimetypes"
+        )
         configured_types = config.get(
-            f"ckan.upload.{self.object_type}.types")
+            f"ckan.upload.{self.object_type}.types"
+        )
 
         defaults = DEFAULT_UPLOAD_RESTRICTIONS.get(self.object_type, {})
-        mimetypes = (_normalize_config_list(configured_mimetypes)
-                     or list(defaults.get("mimetypes", ())))
-        types = (_normalize_config_list(configured_types)
-                 or list(defaults.get("types", ())))
+        mimetypes = (
+            _normalize_config_list(configured_mimetypes)
+            or list(defaults.get("mimetypes", ()))
+        )
+        types = (
+            _normalize_config_list(configured_types)
+            or list(defaults.get("types", ()))
+        )
+
+        ext = os.path.splitext(self.filename)[1].lower().strip()
+
+        if ext in BLOCKED_EXTENSIONS:
+            raise logic.ValidationError({
+                self.file_field: [_("This file extension is not allowed.")]
+            })
+        
+
+
+        err: ErrorDict = {
+            self.file_field: [_("Unsupported file type. Please upload a valid file.")]
+        }
+
+
+        head = self.upload_file.read(8192)
+        self.upload_file.seek(0, os.SEEK_SET)
+
+        actual = magic.from_buffer(head, mime=True)
+
+        if actual in BLOCKED_MIMETYPES:
+            raise logic.ValidationError({
+                self.file_field: [_("Unsupported file type. Please upload a valid file.")]
+            })
         
         if not mimetypes and not types:
             return
 
-        # 2KB required for detecting xlsx mimetype
-        actual = magic.from_buffer(self.upload_file.read(2048), mime=True)
-        self.upload_file.seek(0, os.SEEK_SET)
-        err: ErrorDict = {
-            self.file_field: [_('Unsupported file type. Please upload an image file')] 
-        }
-
         if mimetypes and actual not in mimetypes:
             raise logic.ValidationError(err)
 
-        type_ = actual.split("/")[0]
+        type_ = actual.split("/", 1)[0]
         if types and type_ not in types:
             raise logic.ValidationError(err)
 

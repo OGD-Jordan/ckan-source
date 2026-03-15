@@ -11,7 +11,7 @@ Example
 #}
 {% macro image_upload(data, errors, field_url='image_url', field_upload='image_upload', field_clear='clear_upload',
                     is_url=false, is_upload=false, is_upload_enabled=false, placeholder=false,
-                    url_label='', upload_label='', field_name='image_url')  %}
+                    url_label='', upload_label='', field_name='image_url', enable_external_link=true)  %}
 {% set placeholder = placeholder if placeholder else _('http://example.com/my-image.jpg') %}
 {% set url_label = url_label or _('Image URL')  %}
 {% set upload_label = upload_label or _('Image')  %}
@@ -39,7 +39,8 @@ Example
             data-module-field_clear="{{ field_clear }}"
             data-module-upload_label="{{ upload_label }}"
             data-module-field_name="{{ field_name }}"
-            data-module-previous_upload="{{ 'true' if previous_upload else 'false' }}">
+            data-module-previous_upload="{{ 'true' if previous_upload else 'false' }}"
+            data-module-enable_external_link="{{ 'true' if enable_external_link else 'false' }}">
     {% endif %}
 
 

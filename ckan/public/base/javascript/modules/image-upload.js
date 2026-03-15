@@ -12,7 +12,8 @@ this.ckan.module('image-upload', function($) {
       field_clear: 'clear_upload',
       field_name: 'name',
       upload_label: '',
-      previous_upload: false
+      previous_upload: false,
+      enable_external_link: true
     },
 
     /* Should be changed to true if user modifies resource's name
@@ -57,12 +58,16 @@ this.ckan.module('image-upload', function($) {
         .appendTo(this.el);
 
       // Button to set the field to be a URL
-      this.button_url = $('<a href="javascript:;" class="btn btn-default">' +
-                          '<i class="fa fa-globe"></i>' +
-                          this._('Link') + '</a>')
-        .prop('title', this._('Link to a URL on the internet (you can also link to an API)'))
-        .on('click', this._onFromWeb)
-        .insertAfter(this.input);
+      if (options.enable_external_link) {
+        this.button_url = $('<a href="javascript:;" class="btn btn-default">' +
+                            '<i class="fa fa-globe"></i>' +
+                            this._('Link') + '</a>')
+          .prop('title', this._('Link to a URL on the internet (you can also link to an API)'))
+          .on('click', this._onFromWeb)
+          .insertAfter(this.input);
+      } else {
+        this.button_url = $();
+      }
 
       // Button to attach local file to the form
       this.button_upload = $('<a href="javascript:;" class="btn btn-default">' +
@@ -111,7 +116,7 @@ this.ckan.module('image-upload', function($) {
         this._nameIsDirty = true;
       }
 
-      if (options.is_url) {
+      if (options.is_url && options.enable_external_link) {
         this._showOnlyFieldUrl();
 
         this._updateUrlLabel(this._('URL'));

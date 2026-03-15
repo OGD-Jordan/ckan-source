@@ -3,6 +3,7 @@
 '''API functions for deleting data from CKAN.'''
 from __future__ import annotations
 
+from ckan.lib.dictization.model_save import package_dict_save
 from ckan.types.logic import ActionResult
 import logging
 from typing import Any, Union, Type, cast
@@ -192,8 +193,9 @@ def resource_delete(context: Context, data_dict: DataDict) -> ActionResult.Resou
     if pkg_dict.get('resources'):
         pkg_dict['resources'] = [r for r in pkg_dict['resources'] if not
                 r['id'] == id]
+        
     try:
-        pkg_dict = _get_action('package_update')(context, pkg_dict)
+        package_dict_save(pkg_dict, context)
     except ValidationError as e:
         errors = cast("list[ErrorDict]", e.error_dict['resources'])[-1]
         raise ValidationError(errors)
