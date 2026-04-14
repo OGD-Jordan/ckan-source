@@ -3131,31 +3131,6 @@ def member_roles_list(
     return roles_list
 
 
-def help_show(context: Context, data_dict: DataDict) -> ActionResult.HelpShow:
-    '''Return the help string for a particular API action.
-
-    :param name: Action function name (eg `user_create`, `package_search`)
-    :type name: string
-    :returns: The help string for the action function, or None if the function
-              does not have a docstring.
-    :rtype: string
-
-    :raises: :class:`ckan.logic.NotFound`: if the action function doesn't exist
-
-    '''
-
-    function_name = logic.get_or_bust(data_dict, 'name')
-
-    _check_access('help_show', context, data_dict)
-
-    try:
-        function = logic.get_action(function_name)
-    except KeyError:
-        raise NotFound('Action function not found')
-
-    return function.__doc__
-
-
 def config_option_show(context: Context,
                        data_dict: DataDict) -> ActionResult.ConfigOptionShow:
     '''Show the current value of a particular configuration option.

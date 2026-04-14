@@ -312,10 +312,6 @@ def request_reset(context: Context, data_dict: DataDict) -> AuthResult:
     return {'success': True}
 
 
-def help_show(context: Context, data_dict: DataDict) -> AuthResult:
-    return {'success': True}
-
-
 def config_option_show(context: Context, data_dict: DataDict) -> AuthResult:
     '''Show runtime-editable configuration option. Only sysadmins.'''
     return {'success': False}
